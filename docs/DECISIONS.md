@@ -335,4 +335,13 @@ The repo is private, so Actions minutes count against GitHub Free's monthly allo
 - **e2e runs in the checks job**, reusing its install and its build (turbo's local cache): about two minutes less per run.
 - The web unit tests got the 30 s limits the worker and db tests already had: `memory://` boots PGlite in 4–5.5 s on a runner, and `context.test.ts` failed main twice at the 5 s default.
 
-Running out of minutes stops CI only: Vercel and Railway build on their own machines. Making the repo public (free minutes) or adding a payment method with an Actions budget is the owner's call.
+Running out of minutes stops CI only: Vercel and Railway build on their own machines. The owner chose to make the repo public, which makes the minutes free (next section).
+
+## The repository is public (owner, Nov 14)
+
+- **A fresh repository, not the old one opened.** The old history recorded the owner's personal email addresses as the commit author, and force-pushing is not allowed here, so it could not be cleaned. `trappalfy/samite` now starts from one commit with the tree of the old main (`d01555e`). The old repository is private, renamed `trappalfy/samite-archive`, and frozen. PR numbers in these notes up to #21 refer to it.
+- **Commits use GitHub's noreply address** (`git config user.email` in this clone). A merge made through GitHub's API uses the account's email unless "Keep my email addresses private" is on in the owner's GitHub settings. Until it is, pull requests are merged locally (`git merge --no-ff`) and pushed.
+- **The style references stay out** (`design/reference/README.md`): they are other people's work. The owner keeps the files outside git.
+- **gitleaks false positives are marked on their lines** (`gitleaks:allow`). `.gitleaksignore` named commits of the old history, which this repository doesn't have.
+- **On:** private vulnerability reporting (the README points to it), secret scanning with push protection, and protection of `main` against force pushes and deletion.
+- **No license yet** (all rights reserved), until the owner chooses one.
