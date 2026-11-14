@@ -1,0 +1,71 @@
+{
+  "v": "samite/job@1",
+  "title": "Re\u0301sume\u0301 parser: extract name, email, phone, city and the last three job titles from 1,000 PDFs (no OCR needed, text only)",
+  "instructions": "Every limit at its edge: 10 criteria, one of 280 characters, a 1-byte file limit, 10 attachments.",
+  "accepted_when": [
+    "c1 one",
+    "c2 two",
+    "c3 three",
+    "c4 four",
+    "c5 five",
+    "c6 six",
+    "c7 seven",
+    "c8 eight",
+    "c9 nine",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "deliverable": { "kind": "file", "max_bytes": 1 },
+  "category": "devices",
+  "attachments": [
+    {
+      "name": "a0.bin",
+      "url": "https://example.com/a0.bin",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    {
+      "name": "a1.bin",
+      "url": "https://example.com/a1.bin",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111"
+    },
+    {
+      "name": "a2.bin",
+      "url": "https://example.com/a2.bin",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222"
+    },
+    {
+      "name": "a3.bin",
+      "url": "https://example.com/a3.bin",
+      "sha256": "3333333333333333333333333333333333333333333333333333333333333333"
+    },
+    {
+      "name": "a4.bin",
+      "url": "https://example.com/a4.bin",
+      "sha256": "4444444444444444444444444444444444444444444444444444444444444444"
+    },
+    {
+      "name": "a5.bin",
+      "url": "https://example.com/a5.bin",
+      "sha256": "5555555555555555555555555555555555555555555555555555555555555555"
+    },
+    {
+      "name": "a6.bin",
+      "url": "https://example.com/a6.bin",
+      "sha256": "6666666666666666666666666666666666666666666666666666666666666666"
+    },
+    {
+      "name": "a7.bin",
+      "url": "https://example.com/a7.bin",
+      "sha256": "7777777777777777777777777777777777777777777777777777777777777777"
+    },
+    {
+      "name": "a8.bin",
+      "url": "https://example.com/a8.bin",
+      "sha256": "8888888888888888888888888888888888888888888888888888888888888888"
+    },
+    {
+      "name": "a9.bin",
+      "url": "https://example.com/a9.bin",
+      "sha256": "9999999999999999999999999999999999999999999999999999999999999999"
+    }
+  ]
+}

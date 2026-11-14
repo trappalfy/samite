@@ -1,0 +1,8 @@
+{
+  "note": "A nai\u0308ve first pass; see \"Caveats\".",
+  "text": "Answer:\n\n1. The cafe\u0301 opens at 08:00 ☕\n2. Closed on Mondays 😴\n\nCaveats: hours change in August.\r\nSource: \\\\server\\share\\hours.txt",
+  "kind": "text",
+  "attempt": 2,
+  "job": "11111111111111111111111111111111",
+  "v": "samite/delivery@1"
+}

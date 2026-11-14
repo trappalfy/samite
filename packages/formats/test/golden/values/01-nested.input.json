@@ -1,0 +1,14 @@
+{
+  "z": [3, 2, 1, [], {}, [[[{ "deep": { "deeper": { "deepest": [null, true, false] } } }]]]],
+  "numbers": [0, -0, 1, -1, 9007199254740991, -9007199254740991, 209715200],
+  "Cafe\u0301": "key composed by NFC",
+  "\u00e9t\u00e9": "already NFC key",
+  "\u00f6": 1,
+  "a": { "b": { "a": "nested keys sort too", "B": "uppercase before lowercase", "": "empty key first" } },
+  "😀": "emoji key: sorts after every key below U+D800",
+  "€": "euro key",
+  "line\nbreak": "control characters in a key",
+  "escapes": "quote \" backslash \\ slash / tab \t newline \n cr \r bs \b ff \f nul \u0000 us \u001f del \u007f",
+  "separators": "\u2028 and \u2029 stay literal",
+  "astral": "𝄞 👨\u200d👩\u200d👧 🇫🇷"
+}

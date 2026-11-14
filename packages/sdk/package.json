@@ -1,0 +1,26 @@
+{
+  "name": "@samite/sdk",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "TypeScript SDK for machines on Samite (CLAUDE.md \u00a76.2). Private until the owner confirms the @samite npm scope.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:int": "vitest run -c vitest.int.config.ts"
+  },
+  "dependencies": {
+    "@samite/config": "workspace:*",
+    "@samite/formats": "workspace:*",
+    "@samite/program-client": "workspace:*",
+    "@solana/kit": "8.6.0"
+  },
+  "devDependencies": {
+    "vitest": "5.1.0",
+    "@samite/local": "workspace:*"
+  }
+}

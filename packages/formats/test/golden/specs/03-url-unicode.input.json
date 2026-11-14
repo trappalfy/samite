@@ -1,0 +1,12 @@
+{
+  "accepted_when": [
+    "東京のカフェ 20 軒、す\u3079て営業時間つき",
+    "Hangul names written as \u1112\u1161\u11ab\u1100\u1173\u11af syllables",
+    "👩\u200d💻 Each entry links its source"
+  ],
+  "deliverable": { "kind": "url" },
+  "instructions": "List opening hours for 20 cafe\u0301s.\u2028Units: \u212b is not a unit here; q\u0307\u0323 is a test of mark order.\nKeep \ufb01 ligatures as typed.\u0007\u007f Done 👍\ud83c\udffd",
+  "title": "東京のカフェ 20 軒の営業時間を調\u3079る",
+  "category": "other",
+  "v": "samite/job@1"
+}

@@ -1,0 +1,9 @@
+design/
+brand/
+CLAUDE.md
+docs/KIT.md
+pnpm-lock.yaml
+packages/program-client/src/generated/
+packages/program-client/idl/
+target/
+packages/db/drizzle/meta/

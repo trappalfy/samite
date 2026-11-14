@@ -1,0 +1,36 @@
+/* Samite tokens (CLAUDE.md §11.2, §11.3). Black, cream, greys between. No other colours, ever.
+   Fonts come from next/font as --ff-montserrat / --ff-space-mono (set on <html>). */
+:root {
+  --bg: #000; /* page */
+  --panel: #0a0a09; /* modules, inputs, code */
+  --panel-2: #111110; /* raised: wallet chip, selected option, box buttons */
+  --line: #1f1e1c; /* every hairline */
+  --line-hi: #3b3a36; /* borders of controls, chips, modules */
+  --cream: #f2efe8; /* text, ink of prints, primary button, the paper panel */
+  --paper: #f2efe8;
+  --ink: #0a0a0a; /* text and prints on cream */
+  --text-2: rgba(242, 239, 232, 0.66); /* body copy on black */
+  --text-3: #8c8981; /* labels, captions, "example" (6.0:1 on black) */
+  --muted: #5f5d58; /* lines, fills, disabled only; never text on black (3.2:1). Caption colour on cream */
+  --display: var(--ff-montserrat, "Montserrat"), system-ui, sans-serif;
+  --mono: var(--ff-space-mono, "Space Mono"), ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--line);
+  --color-line-hi: var(--line-hi);
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-muted: var(--muted);
+  --font-display: var(--display);
+  --font-mono: var(--mono);
+  --radius-*: initial;
+  --shadow-*: initial;
+}

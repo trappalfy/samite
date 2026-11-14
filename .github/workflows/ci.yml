@@ -1,0 +1,200 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # What changed, so the expensive jobs run only when their inputs did (the repo is private: Actions minutes are
+  # billed past the free $12 a month). An unknown base (a new branch, a force push) runs everything.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      checks: read
+    outputs:
+      code: ${{ steps.f.outputs.code }}
+      program: ${{ steps.f.outputs.program }}
+      worker: ${{ steps.f.outputs.worker }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: f
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          EVENT: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A merge into main from a pull request that already contained main: the pull request's run tested this
+          # very tree, so when that run passed, main doesn't run it again (that repeat was a third of the minutes,
+          # Nov 12-14). A squash, a stale branch or a red run falls through to the usual diff.
+          if [ "$EVENT" = push ] && git rev-parse -q --verify HEAD^2 >/dev/null; then
+            pr=$(git rev-parse HEAD^2)
+            if git merge-base --is-ancestor HEAD^1 "$pr"; then
+              green=$(gh api "repos/$REPO/commits/$pr/check-runs?per_page=100" --jq \
+                '[.check_runs[] | select(.app.slug == "github-actions")] | length > 0 and all(.conclusion == "success" or .conclusion == "skipped")')
+              if [ "$green" = true ]; then
+                echo "Tested and green in the pull request ($pr)"
+                printf 'code=false\nprogram=false\nworker=false\n' >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+            fi
+          fi
+          if [ -z "$BASE" ] || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            printf 'code=true\nprogram=true\nworker=true\n' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          files=$(git diff --name-only "$BASE" HEAD)
+          echo "$files"
+          has() { if echo "$files" | grep -qE "$1"; then echo true; else echo false; fi; }
+          # code: anything but docs/, design/ and the Markdown files at the root
+          if echo "$files" | grep -vqE '^(docs/|design/|[^/]+\.md$)'; then code=true; else code=false; fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "program=$(has '^(programs/|Cargo\.(toml|lock)$|Anchor\.toml$|rust-toolchain\.toml$|packages/program-client/idl/|\.github/workflows/)')" >> "$GITHUB_OUTPUT"
+          # the worker's image holds the worker and the packages it imports (docker build installs "@samite/worker...")
+          echo "worker=$(has '^(apps/worker/|packages/(config|db|formats|program-client|storage|local)/|Dockerfile$|\.dockerignore$|pnpm-lock\.yaml$|pnpm-workspace\.yaml$|package\.json$|\.github/workflows/)')" >> "$GITHUB_OUTPUT"
+
+  # One job for the web side: the e2e run reuses this job's install and its build (turbo's local cache), which a
+  # separate job paid for again (about two minutes a run).
+  checks:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pnpm --filter web exec playwright install --with-deps chromium
+      - run: pnpm e2e
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7
+
+  # The worker's Docker image for Railway (Dockerfile at the root) builds from the committed lockfile.
+  worker-image:
+    needs: changes
+    if: needs.changes.outputs.worker == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker build --tag samite-worker .
+      - name: The image starts the worker, which stops on the missing DATABASE_URL (not on a missing module)
+        run: |
+          out=$(docker run --rm samite-worker 2>&1 || true)
+          echo "$out" | tail -5
+          echo "$out" | grep -q "DATABASE_URL and SOLANA_RPC_URL are required"
+
+  secrets:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # The escrow program: anchor build, then the LiteSVM tests. Local only: nothing here talks to a cluster.
+  program:
+    needs: changes
+    if: needs.changes.outputs.program == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      RUST_VERSION: "1.99.0" # keep in sync with rust-toolchain.toml
+      SOLANA_VERSION: "4.4.0" # Agave
+      ANCHOR_VERSION: "1.2.2" # keep in sync with Anchor.toml and anchor-lang in programs/samite_escrow/Cargo.toml
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Rust ${{ env.RUST_VERSION }}
+        run: rustup toolchain install "$RUST_VERSION" --profile minimal --component rustfmt,clippy
+
+      - uses: Swatinem/rust-cache@v2.9.3
+        with:
+          cache-bin: "false"
+
+      - name: Cache Solana CLI and platform tools
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.local/share/solana/install
+            ~/.cache/solana
+          key: solana-${{ runner.os }}-${{ env.SOLANA_VERSION }}
+
+      - name: Install Solana CLI ${{ env.SOLANA_VERSION }}
+        run: |
+          if [ ! -x "$HOME/.local/share/solana/install/active_release/bin/solana" ]; then
+            sh -c "$(curl -sSfL "https://release.anza.xyz/v${SOLANA_VERSION}/install")"
+          fi
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+
+      - name: Cache Anchor CLI
+        id: anchor-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cargo/bin/anchor
+          key: anchor-cli-${{ runner.os }}-${{ env.ANCHOR_VERSION }}-rust-${{ env.RUST_VERSION }}
+
+      - name: Install Anchor CLI ${{ env.ANCHOR_VERSION }}
+        if: steps.anchor-cache.outputs.cache-hit != 'true'
+        run: cargo install anchor-cli --version "$ANCHOR_VERSION" --locked
+
+      - name: Versions
+        run: |
+          rustc --version
+          solana --version
+          anchor --version
+
+      # The program keypair is gitignored, so CI has none: --ignore-keys skips the keypair/declare_id! comparison.
+      # The tests load the .so under samite_escrow::ID, so the keypair never matters here.
+      - name: anchor build
+        run: anchor build --ignore-keys
+
+      - run: cargo fmt --check
+      - run: cargo clippy -p samite_escrow --all-targets -- -D warnings
+
+      - name: Program tests (LiteSVM)
+        run: cargo test -p samite_escrow
+
+      - name: Committed IDL matches the build
+        run: diff -u packages/program-client/idl/samite_escrow.json target/idl/samite_escrow.json
+
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Generated client matches the committed IDL
+        run: |
+          pnpm --filter @samite/program-client generate
+          git diff --exit-code -- packages/program-client
+      - name: Keeper on the built program (LiteSVM, clock set per test)
+        run: pnpm --filter @samite/worker test:svm

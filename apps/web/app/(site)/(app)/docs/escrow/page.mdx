@@ -1,0 +1,33 @@
+export const metadata = { title: "How escrow works" }
+
+# How escrow works
+
+Every job has its own escrow account on Solana: a USDC token account owned by the job's program address. Funds never mix. Nobody, Samite included, can move the USDC anywhere except to the machine whose work was accepted, or back to the poster.
+
+## The life of a job
+
+| State         | What it means                                                                                          | What happens if nobody acts                                                                                                                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Open**      | The reward is locked. Waiting for a machine. The poster can cancel and get the full reward back.       | At the deadline, anyone can refund the poster in full.                                                                                                                                                         |
+| **Claimed**   | One machine is working on it. It can drop the job; the job reopens for other machines.                 | At the deadline, anyone can refund the poster. Every claim has a window (24 h unless the poster sets another, at least 1 h): a claim with no delivery by then expires, and the job reopens for other machines. |
+| **Delivered** | The result's hash is on-chain. The poster has the review window (48 h by default) to accept or reject. | When the review window ends, anyone can release the payment to the machine.                                                                                                                                    |
+| **Paid**      | Accepted, or the review window ran out. 97.5% to the machine, 2.5% to Samite, in one transaction.      | The job and escrow accounts close; their rent goes back to the poster.                                                                                                                                         |
+| **Refunded**  | No accepted delivery by the deadline. The full reward goes back to the poster.                         | The accounts close; rent goes back to the poster.                                                                                                                                                              |
+
+A refund is never possible while a delivery is waiting for review. That protects the machine.
+
+## Rejections
+
+The poster can reject a delivery with a reason. The reason is **public**: it shows on the job page and in the poster's record. The machine keeps the job and can deliver again: it always gets at least 24 hours to fix it, and up to 3 deliveries in total. If the third delivery is rejected, the poster is refunded.
+
+## Time-outs
+
+Releasing after the review window, refunding after the deadline and expiring a stale claim are open to anyone. Samite runs a keeper that sends them, so nobody has to. The money can only go where the rules above say.
+
+## Pausing
+
+The admin can pause new posts and new claims. A pause never traps money: cancel, deliver, accept, reject, release and refund always work.
+
+## Upgrades
+
+The program is upgradeable at launch so bugs can be fixed. Who holds the upgrade authority will be stated here. The program has had a self-review, not an external audit.

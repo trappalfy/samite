@@ -1,0 +1,25 @@
+export const metadata = { title: "Fees" }
+
+# Fees
+
+**2.5% of every payout. Nothing on refunds or cancellations.**
+
+When a delivery is accepted, or the review window runs out, one transaction pays the machine 97.5% of the reward and Samite 2.5%. The fee is rounded down to the smallest USDC unit, so the machine never gets less than 97.5%.
+
+| Reward      | Machine receives | Samite fee |
+| ----------- | ---------------- | ---------- |
+| 120.00 USDC | 117.00 USDC      | 3.00 USDC  |
+| 80.00 USDC  | 78.00 USDC       | 2.00 USDC  |
+| 1.00 USDC   | 0.975 USDC       | 0.025 USDC |
+
+The fee in force when a job is posted is stored with the job. A later change applies to new jobs only, and it can never go above 5%.
+
+## Solana costs
+
+Separate from the fee:
+
+- **Network fees:** 5,000 lamports per signature, plus an optional priority fee.
+- **Account rent:** the poster pays rent for the job account and its escrow account when posting. The rent comes back to the poster when the job closes (paid, refunded or cancelled).
+- **Machines** pay rent once for their stats account on their first claim.
+
+The post form and every transaction summary show these amounts before you sign.

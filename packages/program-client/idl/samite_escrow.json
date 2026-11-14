@@ -1,0 +1,3190 @@
+{
+  "address": "AcTtHioeudEDQuaW6WaL5auXC2rv3jPNoNbPxPB7pHM9",
+  "metadata": {
+    "name": "samite_escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Samite escrow: one USDC escrow per job, paid to the machine on acceptance"
+  },
+  "instructions": [
+    {
+      "name": "accept_admin",
+      "docs": [
+        "The proposed admin takes over."
+      ],
+      "discriminator": [
+        112,
+        42,
+        45,
+        90,
+        116,
+        181,
+        13,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "new_admin",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "accept_delivery",
+      "docs": [
+        "Poster only, `Delivered` jobs: pays the machine (§4.5) and closes the job."
+      ],
+      "discriminator": [
+        153,
+        42,
+        84,
+        137,
+        56,
+        87,
+        13,
+        64
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "machine"
+        },
+        {
+          "name": "machine_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "machine"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "machine_token",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "machine"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "`dup`: the treasury may be the machine's own ATA; the payout must not fail on that."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_job",
+      "docs": [
+        "Poster only, `Open` jobs: full refund, job closed."
+      ],
+      "discriminator": [
+        126,
+        241,
+        155,
+        241,
+        50,
+        236,
+        83,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poster_token",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "poster"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_job",
+      "docs": [
+        "A machine takes an `Open` job before its deadline (not the machine that last left it). Blocked while paused."
+      ],
+      "discriminator": [
+        9,
+        160,
+        5,
+        231,
+        116,
+        123,
+        198,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "machine",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "machine_token",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "machine"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "machine_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "machine"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "expire_claim",
+      "docs": [
+        "Anyone, once a claim has outlived the job's claim window: the job reopens."
+      ],
+      "discriminator": [
+        176,
+        78,
+        241,
+        29,
+        159,
+        81,
+        26,
+        6
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_config",
+      "docs": [
+        "Creates the config. Signer must be the program's upgrade authority; it becomes the admin. The fee account is",
+        "`treasury`, which must be the USDC ATA of `treasury_owner`."
+      ],
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint",
+          "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+        },
+        {
+          "name": "treasury_owner",
+          "docs": [
+            "The wallet (or multisig) whose USDC ATA receives fees. An account owned by this program (a job PDA) is refused."
+          ]
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "The fee account: must be the USDC ATA of `treasury_owner` (`check_treasury`)."
+          ]
+        },
+        {
+          "name": "samite_program",
+          "address": "AcTtHioeudEDQuaW6WaL5auXC2rv3jPNoNbPxPB7pHM9"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "min_reward",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "post_job",
+      "docs": [
+        "Creates a job and locks `reward` in its vault. Blocked while paused."
+      ],
+      "discriminator": [
+        34,
+        208,
+        58,
+        248,
+        129,
+        234,
+        179,
+        211
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "poster_token",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "poster"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "poster"
+              },
+              {
+                "kind": "arg",
+                "path": "job_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "`init_if_needed`: anyone can create the job PDA's ATA before this transaction lands (its address is",
+            "predictable); that must not block the post. An existing vault must be the job PDA's USDC ATA (Anchor checks the",
+            "address, mint, owner and token program) with no delegate or close authority (checked in the handler)."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": "u64"
+        },
+        {
+          "name": "reward",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "review_window",
+          "type": "i64"
+        },
+        {
+          "name": "claim_window",
+          "type": "i64"
+        },
+        {
+          "name": "policy",
+          "type": {
+            "defined": {
+              "name": "ClaimPolicy"
+            }
+          }
+        },
+        {
+          "name": "allowlist",
+          "type": {
+            "vec": "pubkey"
+          }
+        },
+        {
+          "name": "spec_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "propose_admin",
+      "docs": [
+        "Admin only. Names the next admin (never the all-zero address), who must call `accept_admin`."
+      ],
+      "discriminator": [
+        121,
+        214,
+        199,
+        212,
+        87,
+        39,
+        117,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "new_admin",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "refund_after_deadline",
+      "docs": [
+        "Anyone, after the deadline, `Open` or `Claimed` jobs: full refund to the poster, job closed."
+      ],
+      "discriminator": [
+        175,
+        189,
+        26,
+        90,
+        209,
+        113,
+        41,
+        159
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poster",
+          "writable": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poster_token",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "poster"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reject_delivery",
+      "docs": [
+        "Poster only, inside the review window: back to `Claimed` (or refund and close after the last delivery)."
+      ],
+      "discriminator": [
+        36,
+        183,
+        50,
+        167,
+        246,
+        186,
+        10,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "machine"
+        },
+        {
+          "name": "machine_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "machine"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "poster_token",
+          "docs": [
+            "Receives the refund if this was the last allowed delivery."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "poster"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "reason_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "release_after_review",
+      "docs": [
+        "Anyone, after the review window with no answer: pays the machine exactly as `accept_delivery`."
+      ],
+      "discriminator": [
+        166,
+        250,
+        3,
+        104,
+        87,
+        93,
+        133,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "poster",
+          "writable": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "machine"
+        },
+        {
+          "name": "machine_stats",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  99,
+                  104,
+                  105,
+                  110,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "machine"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "job"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "machine_token",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "machine"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "usdc_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "`dup`: the treasury may be the machine's own ATA; the payout must not fail on that."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "submit_delivery",
+      "docs": [
+        "The job's machine records its delivery hash, up to the deadline, at most MAX_DELIVERIES times."
+      ],
+      "discriminator": [
+        217,
+        177,
+        33,
+        54,
+        136,
+        185,
+        123,
+        96
+      ],
+      "accounts": [
+        {
+          "name": "machine",
+          "signer": true
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "delivery_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "unclaim_job",
+      "docs": [
+        "The job's machine drops it; it reopens."
+      ],
+      "discriminator": [
+        248,
+        251,
+        33,
+        85,
+        20,
+        212,
+        123,
+        44
+      ],
+      "accounts": [
+        {
+          "name": "machine",
+          "signer": true
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.poster",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.job_id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_config",
+      "docs": [
+        "Admin only. Each `Some` changes that setting. `new_treasury_owner` with `new_treasury` (its USDC ATA) replaces",
+        "the fee account when both are passed."
+      ],
+      "discriminator": [
+        29,
+        158,
+        252,
+        191,
+        10,
+        83,
+        219,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_treasury_owner",
+          "docs": [
+            "A new treasury owner (wallet or multisig); an account owned by this program (a job PDA) is refused. Pass it with",
+            "`new_treasury`, or neither to keep the current treasury."
+          ],
+          "optional": true
+        },
+        {
+          "name": "new_treasury",
+          "docs": [
+            "The new fee account: must be the USDC ATA of `new_treasury_owner` (`check_treasury`)."
+          ],
+          "optional": true
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_bps",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "min_reward",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "paused",
+          "type": {
+            "option": "bool"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Job",
+      "discriminator": [
+        75,
+        124,
+        80,
+        203,
+        161,
+        180,
+        202,
+        80
+      ]
+    },
+    {
+      "name": "MachineStats",
+      "discriminator": [
+        19,
+        190,
+        152,
+        255,
+        181,
+        36,
+        36,
+        2
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AdminAccepted",
+      "discriminator": [
+        174,
+        12,
+        76,
+        139,
+        158,
+        99,
+        110,
+        254
+      ]
+    },
+    {
+      "name": "AdminProposed",
+      "discriminator": [
+        129,
+        249,
+        226,
+        227,
+        199,
+        82,
+        110,
+        243
+      ]
+    },
+    {
+      "name": "ClaimExpired",
+      "discriminator": [
+        224,
+        96,
+        139,
+        90,
+        26,
+        10,
+        65,
+        93
+      ]
+    },
+    {
+      "name": "ConfigInitialized",
+      "discriminator": [
+        181,
+        49,
+        200,
+        156,
+        19,
+        167,
+        178,
+        91
+      ]
+    },
+    {
+      "name": "ConfigUpdated",
+      "discriminator": [
+        40,
+        241,
+        230,
+        122,
+        11,
+        19,
+        198,
+        194
+      ]
+    },
+    {
+      "name": "DeliveryRejected",
+      "discriminator": [
+        190,
+        128,
+        122,
+        108,
+        160,
+        167,
+        230,
+        238
+      ]
+    },
+    {
+      "name": "DeliverySubmitted",
+      "discriminator": [
+        104,
+        47,
+        131,
+        41,
+        20,
+        153,
+        87,
+        75
+      ]
+    },
+    {
+      "name": "JobCancelled",
+      "discriminator": [
+        203,
+        84,
+        143,
+        130,
+        48,
+        134,
+        74,
+        191
+      ]
+    },
+    {
+      "name": "JobClaimed",
+      "discriminator": [
+        176,
+        110,
+        104,
+        38,
+        27,
+        220,
+        61,
+        191
+      ]
+    },
+    {
+      "name": "JobPaid",
+      "discriminator": [
+        210,
+        173,
+        183,
+        36,
+        83,
+        220,
+        40,
+        160
+      ]
+    },
+    {
+      "name": "JobPosted",
+      "discriminator": [
+        18,
+        171,
+        12,
+        141,
+        212,
+        169,
+        183,
+        52
+      ]
+    },
+    {
+      "name": "JobRefunded",
+      "discriminator": [
+        156,
+        171,
+        111,
+        37,
+        17,
+        174,
+        8,
+        167
+      ]
+    },
+    {
+      "name": "JobUnclaimed",
+      "discriminator": [
+        103,
+        130,
+        125,
+        206,
+        128,
+        162,
+        176,
+        143
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NotUpgradeAuthority",
+      "msg": "Signer is not the program's upgrade authority"
+    },
+    {
+      "code": 6001,
+      "name": "NotAdmin",
+      "msg": "Signer is not the admin"
+    },
+    {
+      "code": 6002,
+      "name": "NotPendingAdmin",
+      "msg": "Signer is not the proposed admin"
+    },
+    {
+      "code": 6003,
+      "name": "FeeTooHigh",
+      "msg": "Fee is above MAX_FEE_BPS (500 = 5%)"
+    },
+    {
+      "code": 6004,
+      "name": "MinRewardZero",
+      "msg": "Minimum reward must be at least 1 base unit"
+    },
+    {
+      "code": 6005,
+      "name": "WrongMint",
+      "msg": "Mint is not the configured USDC mint"
+    },
+    {
+      "code": 6006,
+      "name": "WrongTreasury",
+      "msg": "Account is not the configured treasury"
+    },
+    {
+      "code": 6007,
+      "name": "Paused",
+      "msg": "New posts and claims are paused"
+    },
+    {
+      "code": 6008,
+      "name": "RewardTooSmall",
+      "msg": "Reward is below the minimum reward"
+    },
+    {
+      "code": 6009,
+      "name": "DeadlineOutOfRange",
+      "msg": "Deadline must be between now + 1 hour and now + 90 days"
+    },
+    {
+      "code": 6010,
+      "name": "ReviewWindowOutOfRange",
+      "msg": "Review window must be between 1 hour and 7 days"
+    },
+    {
+      "code": 6011,
+      "name": "ClaimWindowOutOfRange",
+      "msg": "Claim window must be between 1 hour and the time left until the deadline"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidAllowlist",
+      "msg": "Allowlist must hold 1 to 10 addresses with the Allowlist policy, and be empty otherwise"
+    },
+    {
+      "code": 6013,
+      "name": "SpecHashMissing",
+      "msg": "Spec hash is missing"
+    },
+    {
+      "code": 6014,
+      "name": "NotThePoster",
+      "msg": "Signer is not this job's poster"
+    },
+    {
+      "code": 6015,
+      "name": "JobNotOpen",
+      "msg": "Job is not open"
+    },
+    {
+      "code": 6016,
+      "name": "JobNotClaimed",
+      "msg": "Job is not claimed"
+    },
+    {
+      "code": 6017,
+      "name": "JobNotDelivered",
+      "msg": "Job has no delivery waiting for review"
+    },
+    {
+      "code": 6018,
+      "name": "DeadlinePassed",
+      "msg": "The deadline has passed"
+    },
+    {
+      "code": 6019,
+      "name": "PosterCannotClaim",
+      "msg": "A poster cannot claim their own job"
+    },
+    {
+      "code": 6020,
+      "name": "NotProven",
+      "msg": "This job is for proven machines: not enough accepted jobs yet"
+    },
+    {
+      "code": 6021,
+      "name": "NotOnAllowlist",
+      "msg": "Machine is not on this job's allowlist"
+    },
+    {
+      "code": 6022,
+      "name": "NotTheWorker",
+      "msg": "Signer is not this job's machine"
+    },
+    {
+      "code": 6023,
+      "name": "WrongMachine",
+      "msg": "Account is not this job's machine"
+    },
+    {
+      "code": 6024,
+      "name": "NoClaimWindow",
+      "msg": "This job has no claim window"
+    },
+    {
+      "code": 6025,
+      "name": "ClaimWindowNotPassed",
+      "msg": "The claim window has not passed yet"
+    },
+    {
+      "code": 6026,
+      "name": "DeliveryHashMissing",
+      "msg": "Delivery hash is missing"
+    },
+    {
+      "code": 6027,
+      "name": "TooManyDeliveries",
+      "msg": "This job already has the maximum number of deliveries"
+    },
+    {
+      "code": 6028,
+      "name": "ReasonHashMissing",
+      "msg": "Rejection reason hash is missing"
+    },
+    {
+      "code": 6029,
+      "name": "ReviewWindowPassed",
+      "msg": "The review window has passed"
+    },
+    {
+      "code": 6030,
+      "name": "ReviewWindowNotPassed",
+      "msg": "The review window has not passed yet"
+    },
+    {
+      "code": 6031,
+      "name": "RefundWhileDelivered",
+      "msg": "No refund while a delivery is waiting for review"
+    },
+    {
+      "code": 6032,
+      "name": "DeadlineNotPassed",
+      "msg": "The deadline has not passed yet"
+    },
+    {
+      "code": 6033,
+      "name": "MathOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6034,
+      "name": "CannotReclaim",
+      "msg": "This machine left this job (unclaimed, or its claim expired) and cannot claim it again"
+    },
+    {
+      "code": 6035,
+      "name": "TreasuryNotOwnerAta",
+      "msg": "The treasury must be the treasury owner's USDC associated token account"
+    },
+    {
+      "code": 6036,
+      "name": "TreasuryOwnerIsProgramAccount",
+      "msg": "The treasury owner cannot be an account owned by this program (such as a job)"
+    },
+    {
+      "code": 6037,
+      "name": "TreasuryOwnerAndAtaRequired",
+      "msg": "Pass the new treasury owner and its USDC ATA together, or neither"
+    },
+    {
+      "code": 6038,
+      "name": "InvalidNewAdmin",
+      "msg": "The new admin cannot be the default (all-zero) address"
+    },
+    {
+      "code": 6039,
+      "name": "VaultHasDelegateOrCloseAuthority",
+      "msg": "The job's vault already exists with a delegate or a close authority"
+    }
+  ],
+  "types": [
+    {
+      "name": "AdminAccepted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "previous",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AdminProposed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "proposed",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimExpired",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimPolicy",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Any"
+          },
+          {
+            "name": "Proven",
+            "fields": [
+              {
+                "name": "min_accepted",
+                "type": "u32"
+              }
+            ]
+          },
+          {
+            "name": "Allowlist"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "docs": [
+        "PDA `[\"config\"]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "The USDC token account that receives fees: always the USDC ATA (classic SPL Token) of `treasury_owner`, so",
+              "anyone can re-create it if it is closed. Set together with `treasury_owner`."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "docs": [
+              "250 at launch; always <= MAX_FEE_BPS."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "min_reward",
+            "docs": [
+              "Base units; 1_000_000 (1 USDC) at launch."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "docs": [
+              "Blocks `post_job` and `claim_job` only."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "pending_admin",
+            "docs": [
+              "Two-step admin change: set by `propose_admin`, taken by `accept_admin`."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "treasury_owner",
+            "docs": [
+              "The wallet (or multisig) whose USDC ATA is `treasury`. Never an account owned by this program."
+            ],
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_reward",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConfigUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "min_reward",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeliveryRejected",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason_hash",
+            "docs": [
+              "sha256(NFC(reason text)) (§5.3)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "attempt",
+            "type": "u8"
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "The deadline after this rejection (it may have moved to now + MIN_RESUBMIT)."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "refunded",
+            "docs": [
+              "True on the last allowed delivery: the poster was refunded and the job closed (a `JobRefunded` follows)."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DeliverySubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "delivery_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "attempt",
+            "docs": [
+              "1..=MAX_DELIVERIES, equals `Job.deliveries` after this delivery."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "delivered_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Job",
+      "docs": [
+        "PDA `[\"job\", poster, job_id.to_le_bytes()]`. Closed (rent to the poster) when the job ends."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "poster",
+            "type": "pubkey"
+          },
+          {
+            "name": "job_id",
+            "docs": [
+              "Chosen by the client (random u64); the PDA makes collisions fail."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "reward",
+            "docs": [
+              "Base units, locked in the vault."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "docs": [
+              "Snapshot of `Config.fee_bps` at post time."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "spec_hash",
+            "docs": [
+              "sha256 of the canonical job spec (§5.1)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "JobStatus"
+              }
+            }
+          },
+          {
+            "name": "worker",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "policy",
+            "type": {
+              "defined": {
+                "name": "ClaimPolicy"
+              }
+            }
+          },
+          {
+            "name": "allowlist",
+            "docs": [
+              "Empty unless `policy` is `Allowlist`."
+            ],
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Unix seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "review_window",
+            "docs": [
+              "Seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "claim_window",
+            "docs": [
+              "Seconds a claim holds without a delivery: 1 h up to the time left until the deadline, set at post."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "delivery_hash",
+            "docs": [
+              "Last delivery (§5.2); zero if none."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "deliveries",
+            "docs": [
+              "Count, at most MAX_DELIVERIES."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "claimed_at",
+            "docs": [
+              "When the current claim started (restarted by a rejection); 0 when unclaimed."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "delivered_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "previous_worker",
+            "docs": [
+              "The machine whose claim last ended without a payout (`unclaim_job` or `expire_claim`). It can't claim this job",
+              "again, so a claim can't be renewed by the same key; any other machine can claim."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "poster",
+            "type": "pubkey"
+          },
+          {
+            "name": "refunded",
+            "docs": [
+              "Base units returned to the poster."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "claimed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobPaid",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "poster",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "reward",
+            "type": "u64"
+          },
+          {
+            "name": "to_machine",
+            "docs": [
+              "Base units sent to the machine's USDC ATA: `reward - fee`, plus anything that was sent to the vault directly.",
+              "Only `reward - fee` counts as `MachineStats.earned`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee",
+            "docs": [
+              "Base units sent to the treasury: floor(reward * fee_bps / 10_000), or 0 if the treasury is this job's own vault."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "auto",
+            "docs": [
+              "False for `accept_delivery`, true for `release_after_review`."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobPosted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "poster",
+            "type": "pubkey"
+          },
+          {
+            "name": "job_id",
+            "type": "u64"
+          },
+          {
+            "name": "reward",
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "spec_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "review_window",
+            "type": "i64"
+          },
+          {
+            "name": "claim_window",
+            "type": "i64"
+          },
+          {
+            "name": "policy",
+            "type": {
+              "defined": {
+                "name": "ClaimPolicy"
+              }
+            }
+          },
+          {
+            "name": "allowlist",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobRefunded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "poster",
+            "type": "pubkey"
+          },
+          {
+            "name": "refunded",
+            "docs": [
+              "Base units returned to the poster."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deliveries",
+            "docs": [
+              "Deliveries the job had received (> 0 means \"refunded after a delivery\", §4.6)."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Claimed"
+          },
+          {
+            "name": "Delivered"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobUnclaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job",
+            "type": "pubkey"
+          },
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MachineStats",
+      "docs": [
+        "PDA `[\"machine\", worker]`. Created on first claim, paid by the machine. Never closed."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "machine",
+            "type": "pubkey"
+          },
+          {
+            "name": "accepted",
+            "docs": [
+              "Accepted + auto-released deliveries."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "rejected",
+            "type": "u32"
+          },
+          {
+            "name": "earned",
+            "docs": [
+              "Base units received."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "BPS_DENOMINATOR",
+      "type": "u16",
+      "value": "10000"
+    },
+    {
+      "name": "CONFIG_SEED",
+      "type": "bytes",
+      "value": "[99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "JOB_SEED",
+      "type": "bytes",
+      "value": "[106, 111, 98]"
+    },
+    {
+      "name": "MACHINE_SEED",
+      "type": "bytes",
+      "value": "[109, 97, 99, 104, 105, 110, 101]"
+    },
+    {
+      "name": "MAX_ALLOWLIST",
+      "type": "u8",
+      "value": "10"
+    },
+    {
+      "name": "MAX_DEADLINE",
+      "type": "i64",
+      "value": "7776000"
+    },
+    {
+      "name": "MAX_DELIVERIES",
+      "type": "u8",
+      "value": "3"
+    },
+    {
+      "name": "MAX_FEE_BPS",
+      "docs": [
+        "Fee cap, compile-time: 5%."
+      ],
+      "type": "u16",
+      "value": "500"
+    },
+    {
+      "name": "MAX_REVIEW_WINDOW",
+      "type": "i64",
+      "value": "604800"
+    },
+    {
+      "name": "MIN_CLAIM_WINDOW",
+      "docs": [
+        "A claim window is 1 h up to the deadline. Every claim lapses: `post_job` no longer takes 0 (Nov 13)."
+      ],
+      "type": "i64",
+      "value": "3600"
+    },
+    {
+      "name": "MIN_DEADLINE",
+      "docs": [
+        "The deadline is between now + 1 h and now + 90 days."
+      ],
+      "type": "i64",
+      "value": "3600"
+    },
+    {
+      "name": "MIN_RESUBMIT",
+      "docs": [
+        "After a rejection the machine always has at least this long to deliver again."
+      ],
+      "type": "i64",
+      "value": "86400"
+    },
+    {
+      "name": "MIN_REVIEW_WINDOW",
+      "docs": [
+        "The review window is between 1 h and 7 days (the app's default is 48 h)."
+      ],
+      "type": "i64",
+      "value": "3600"
+    },
+    {
+      "name": "USDC_DECIMALS",
+      "type": "u8",
+      "value": "6"
+    },
+    {
+      "name": "USDC_MINT",
+      "docs": [
+        "USDC on mainnet: classic SPL Token, 6 decimals. Source: Circle's USDC contract addresses, checked Nov 12, 2026.",
+        "TODO(verify) against Circle before M5. Local tests write a mint at this same address (§3.2)."
+      ],
+      "type": "pubkey",
+      "value": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+    }
+  ]
+}

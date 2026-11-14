@@ -1,0 +1,45 @@
+/* Privy's connect modal in Samite's tokens (§11.2, §11.4): black panel, cream ink, hairlines, square corners, no
+   shadows, Montserrat and Space Mono. Privy sets these variables on :root at runtime; `html:root` outranks it. */
+html:root {
+  --privy-border-radius-xs: 0px;
+  --privy-border-radius-sm: 0px;
+  --privy-border-radius-md: 0px;
+  --privy-border-radius-mdlg: 0px;
+  --privy-border-radius-lg: 0px;
+  --privy-border-radius-full: 0px;
+  --privy-shadow-modal: none;
+  --privy-shadow-popover: none;
+  --privy-shadow-sheet: none;
+  --privy-shadow-focus-ring: 0 0 0 2px var(--cream);
+  --privy-color-background: var(--panel);
+  --privy-color-background-2: var(--panel-2);
+  --privy-color-background-3: var(--panel-2);
+  --privy-color-background-hover: var(--panel-2);
+  --privy-color-background-clicked: var(--line-hi);
+  --privy-color-foreground: var(--cream);
+  --privy-color-foreground-2: var(--text-2);
+  --privy-color-foreground-3: var(--text-3);
+  --privy-color-foreground-4: var(--muted);
+  --privy-color-foreground-accent: var(--ink);
+  --privy-color-accent: var(--cream);
+  --privy-color-accent-light: var(--cream);
+  --privy-color-accent-dark: var(--cream);
+  --privy-color-border-default: var(--line-hi);
+  --privy-color-border-interactive: var(--line-hi);
+  --privy-color-border-interactive-hover: var(--cream);
+  --privy-color-border-focus: var(--cream);
+  --privy-color-icon-muted: var(--text-3);
+  --privy-color-shadow-elevation: transparent;
+}
+#privy-dialog,
+#privy-dialog button,
+#privy-dialog input {
+  font-family: var(--display);
+}
+#privy-dialog-backdrop {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: none;
+}
+#privy-modal-content {
+  border: 1px solid var(--line-hi);
+}

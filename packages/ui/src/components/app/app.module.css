@@ -1,0 +1,969 @@
+/* The app (design/prototype/app.html): calmer than the site. Same hairlines and tokens, dense mono data. */
+.app {
+  font: 15px/1.5 var(--display);
+}
+.mono {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.dim {
+  color: var(--text-3);
+}
+
+/* top bar */
+.top {
+  display: grid;
+  grid-template-columns: 260px 1fr auto;
+  height: 64px;
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 5;
+}
+.top > * {
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  min-width: 0;
+}
+.top > :first-child {
+  border-right: 1px solid var(--line);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.brand img {
+  height: 20px;
+  width: auto;
+}
+.brand b {
+  font: italic 800 18px/1 var(--display);
+  letter-spacing: 0.03em;
+}
+.brand span {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  margin-left: 6px;
+}
+.tabs {
+  gap: 28px;
+}
+.tabs a {
+  font-family: var(--mono);
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--text-3);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+}
+.tabs a[aria-current="page"] {
+  color: var(--cream);
+  border-bottom-color: var(--cream);
+}
+.right {
+  gap: 12px;
+  justify-content: flex-end;
+}
+.wallet {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--line-hi);
+  background: var(--panel-2);
+  font: 12.5px var(--mono);
+  color: var(--cream);
+  cursor: pointer;
+}
+.wallet i {
+  width: 8px;
+  height: 8px;
+  background: var(--cream);
+}
+.wallet .sol {
+  color: var(--text-3);
+}
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  font: 600 13px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  background: var(--cream);
+  color: var(--ink);
+}
+.btn:hover {
+  background: #fff;
+}
+.ghost {
+  background: transparent;
+  color: var(--cream);
+  border: 1px solid var(--line-hi);
+}
+.ghost:hover {
+  background: transparent;
+  border-color: var(--cream);
+}
+/* a button that can't be pressed right now (waiting for the wallet) looks it */
+.btn:disabled,
+.btn:disabled:hover {
+  background: var(--panel-2);
+  color: var(--text-3);
+  border: 1px solid var(--line-hi);
+  cursor: not-allowed;
+}
+.big {
+  height: 56px;
+  padding: 0 30px;
+  font-size: 15px;
+}
+.btn:focus-visible,
+.wallet:focus-visible,
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible,
+.opt:focus-visible,
+.chip:focus-visible,
+.seg button:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 3px;
+}
+
+/* layout */
+.cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  min-height: calc(100svh - 64px);
+}
+.cols > .main {
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+.cols > .side {
+  min-width: 0;
+}
+/* the empty board fills what is left of the column and sits in its middle */
+.cols > .main:has(> .empty) {
+  display: flex;
+  flex-direction: column;
+}
+.empty {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 20px;
+  padding: 48px 28px;
+  text-align: center;
+  text-wrap: balance;
+}
+.head {
+  padding: 30px 28px 24px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.head h1 {
+  font: 700 34px/1.05 var(--display);
+  letter-spacing: -0.02em;
+}
+.sub {
+  color: var(--text-3);
+  margin-top: 8px;
+  font-size: 14px;
+}
+.crumbs {
+  font: 11.5px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+.crumbs a {
+  text-decoration: none;
+}
+.st {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 700 11px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.stLight {
+  font-weight: 400;
+}
+
+/* filters */
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.chip {
+  height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--line-hi);
+  font: 12px var(--mono);
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  cursor: pointer;
+  background: transparent;
+}
+.chip[aria-pressed="true"] {
+  background: var(--cream);
+  color: var(--ink);
+  border-color: var(--cream);
+}
+.sp {
+  flex: 1;
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--line-hi);
+}
+.seg button {
+  padding: 7px 12px;
+  font: 12px var(--mono);
+  color: var(--text-3);
+  border: 0;
+  border-right: 1px solid var(--line-hi);
+  background: transparent;
+  cursor: pointer;
+}
+.seg button:last-child {
+  border-right: 0;
+}
+.seg button[aria-pressed="true"] {
+  color: var(--cream);
+  background: var(--panel-2);
+}
+
+/* jobs table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.table th {
+  font: 11px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  text-align: left;
+  font-weight: 400;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+.table tbody tr:hover td {
+  background: var(--panel);
+}
+.table th:first-child,
+.table td:first-child {
+  padding-left: 28px;
+}
+.table th:last-child,
+.table td:last-child {
+  padding-right: 28px;
+}
+.r {
+  text-align: right !important;
+}
+.jobT {
+  font-weight: 600;
+  font-size: 15.5px;
+  text-decoration: none;
+}
+.jobT:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.jobM {
+  margin-top: 6px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  color: var(--text-3);
+  font: 12px var(--mono);
+}
+.tag {
+  border: 1px solid var(--line-hi);
+  padding: 1px 6px;
+  font: 11px var(--mono);
+  color: var(--text-2);
+}
+.amt {
+  font: 700 15px var(--mono);
+}
+.amt small {
+  font-weight: 400;
+  color: var(--text-3);
+  font-size: 11px;
+  margin-left: 4px;
+}
+.who {
+  font: 12.5px var(--mono);
+  color: var(--text-2);
+}
+.who b {
+  display: block;
+  font-weight: 400;
+  color: var(--text-3);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.foot {
+  padding: 14px 28px;
+}
+
+/* side panels */
+.panel {
+  border-bottom: 1px solid var(--line);
+  padding: 22px 24px;
+}
+.panel h2 {
+  font: 11.5px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 400;
+  margin-bottom: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+.feed {
+  list-style: none;
+}
+.feed li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: start;
+  padding: 9px 0;
+  border-bottom: 1px dashed var(--line);
+  font: 12.5px var(--mono);
+}
+.feed li:last-child {
+  border-bottom: 0;
+}
+.feed .t {
+  color: var(--text-3);
+}
+.kv {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px 16px;
+  font-size: 14px;
+}
+.kv dt {
+  color: var(--text-3);
+}
+.kv dd {
+  font-family: var(--mono);
+  text-align: right;
+}
+.bigN {
+  font: 700 40px/1 var(--mono);
+  letter-spacing: -0.02em;
+}
+.bigN small {
+  font: 400 14px var(--mono);
+  color: var(--text-3);
+  margin-left: 6px;
+  letter-spacing: 0;
+}
+.print {
+  width: 100%;
+  height: 150px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+
+/* form */
+.sec {
+  padding: 26px 28px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 24px;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  min-inline-size: 0;
+}
+.sec > div:first-child h2 {
+  font: 600 16px var(--display);
+}
+.sec > div:first-child p {
+  color: var(--text-3);
+  font-size: 13.5px;
+  margin-top: 6px;
+}
+.field label,
+.label {
+  display: block;
+  font: 11px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin: 0 0 8px;
+}
+.field + .field {
+  margin-top: 18px;
+}
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--line-hi);
+  color: var(--cream);
+  font: 15px var(--display);
+  padding: 12px 14px;
+  border-radius: 0;
+}
+.field textarea {
+  min-height: 120px;
+  resize: vertical;
+  font: 14px/1.6 var(--mono);
+}
+.amount {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--line-hi);
+  background: var(--panel);
+}
+.field .amount input {
+  border: 0;
+  font: 700 36px var(--mono);
+  padding: 10px 16px;
+  background: transparent;
+}
+.amount span {
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  border-left: 1px solid var(--line-hi);
+  font: 14px var(--mono);
+  color: var(--text-2);
+}
+.invalid {
+  margin-top: 8px;
+  border: 1px dashed var(--line-hi);
+  padding: 8px 12px;
+  color: var(--cream);
+  font-size: 13px;
+}
+/* a field with a problem: dashed cream border, no colour (§11.12) */
+.field [aria-invalid="true"] {
+  border-style: dashed;
+  border-color: var(--cream);
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-3);
+  opacity: 1;
+}
+/* "Fix this to post": what stops the post, each line a way to its field */
+.fixHead {
+  font: 11px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 6px;
+}
+.fixList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.fixList button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--cream);
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--line-hi);
+  text-underline-offset: 3px;
+}
+.fixList button:hover {
+  text-decoration-color: var(--cream);
+}
+.fixList button:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
+}
+/* the post form's draft line: where what you wrote is kept, and a way to start over */
+.draftNote {
+  margin-top: 14px;
+  text-align: center;
+  font: 11px/1.6 var(--mono);
+  color: var(--text-3);
+}
+.draftNote button {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--cream);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--line-hi);
+  text-underline-offset: 3px;
+}
+.draftNote button:hover {
+  text-decoration-color: var(--cream);
+}
+.draftNote button:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 2px;
+}
+.opts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.opt {
+  border: 1px solid var(--line-hi);
+  padding: 12px 14px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--cream);
+  text-align: left;
+  font: inherit;
+}
+.opt b {
+  display: block;
+  font: 600 14px var(--display);
+}
+.opt span {
+  display: block;
+  color: var(--text-3);
+  font-size: 12.5px;
+  margin-top: 4px;
+}
+.opt[aria-checked="true"] {
+  border-color: var(--cream);
+  background: var(--panel-2);
+  box-shadow: inset 0 0 0 1px var(--cream);
+}
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 18px;
+}
+.row2 .field {
+  margin: 0;
+}
+.sum .line {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line);
+  font-size: 14px;
+}
+.sum .line span:last-child {
+  font-family: var(--mono);
+}
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 16px 0 4px;
+}
+.total b {
+  font: 700 30px var(--mono);
+}
+.note {
+  border: 1px solid var(--line-hi);
+  padding: 14px 16px;
+  color: var(--text-2);
+  font-size: 13.5px;
+  margin-top: 16px;
+  background: repeating-linear-gradient(135deg, transparent 0 7px, rgba(242, 239, 232, 0.035) 7px 8px);
+}
+.full {
+  width: 100%;
+  margin-top: 18px;
+}
+.center {
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* job page */
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+.ts {
+  padding: 18px 20px 20px;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+.ts:last-child {
+  border-right: 0;
+}
+.ts .bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  background: #1a1a18;
+}
+.done .bar {
+  background: var(--cream);
+}
+.now .bar {
+  background: linear-gradient(90deg, var(--cream) 0 55%, #1a1a18 55%);
+}
+.ts .st {
+  margin-top: 6px;
+}
+.when {
+  font: 12px var(--mono);
+  color: var(--text-3);
+  margin-top: 8px;
+}
+.tx {
+  font: 12px var(--mono);
+  margin-top: 2px;
+}
+.body {
+  padding: 26px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.body h2 {
+  font: 11.5px var(--mono);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+.body p,
+.body li {
+  color: var(--text-2);
+  font-size: 15px;
+  max-width: 720px;
+}
+.body ul {
+  padding-left: 18px;
+}
+.body li {
+  margin: 4px 0;
+}
+.deliv {
+  border: 1px solid var(--line-hi);
+  background: var(--panel);
+}
+.deliv .h {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  font: 12px var(--mono);
+  color: var(--text-3);
+}
+.deliv pre {
+  max-width: 100%; /* a long CSV line scrolls inside the box, never the page */
+  padding: 16px;
+  font: 13px/1.6 var(--mono);
+  color: var(--cream);
+  overflow-x: auto;
+  white-space: pre;
+}
+/* Inside `.body`, `.body p` sets its size and colour, as the prototype's cascade does for `.ex` (the reference). */
+.machineNote {
+  margin-top: 12px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--line);
+}
+.count {
+  font: 12.5px var(--mono);
+  color: var(--text-2);
+  margin-left: auto;
+}
+.count b {
+  color: var(--cream);
+  font-weight: 700;
+}
+.mcard {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.mcard canvas {
+  width: 56px;
+  height: 56px;
+  border: 1px solid var(--line);
+}
+.mcard a {
+  font: 700 15px var(--mono);
+  text-decoration: none;
+}
+.mcard div div {
+  font-size: 13px;
+}
+
+/* machine page */
+.mhead {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  gap: 24px;
+  padding: 30px 28px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+}
+.mhead canvas {
+  width: 132px;
+  height: 132px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.mhead h1 {
+  font: 700 34px/1.05 var(--display);
+  letter-spacing: -0.02em;
+}
+.mhead .addr {
+  margin-top: 8px;
+  font: 13px var(--mono);
+  color: var(--text-3);
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+.stats > div {
+  padding: 20px 24px;
+  border-right: 1px solid var(--line);
+}
+.stats > div:last-child {
+  border-right: 0;
+}
+.stats .v {
+  font: 700 28px var(--mono);
+  margin-top: 8px;
+}
+.stats .v span {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-3);
+}
+.gridAct {
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 56px;
+  align-items: start;
+}
+.gridAct canvas {
+  width: 476px;
+  max-width: 100%;
+  height: 128px;
+}
+.gridAct .label {
+  margin-bottom: 14px;
+}
+.bycat {
+  display: grid;
+  gap: 12px;
+  max-width: 520px;
+}
+.bycat div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 40px;
+  gap: 14px;
+  align-items: center;
+  font: 12.5px var(--mono);
+  color: var(--text-2);
+}
+.bycat i {
+  height: 10px;
+  background: radial-gradient(var(--cream) 1.3px, transparent 1.7px) 0 50% / 5px 5px repeat-x;
+  display: block;
+}
+.bycat b {
+  font-weight: 700;
+  color: var(--cream);
+  text-align: right;
+}
+
+/* dialog */
+.dialog {
+  margin: auto;
+  width: min(520px, calc(100% - 32px));
+  background: var(--bg);
+  color: var(--cream);
+  border: 1px solid var(--line-hi);
+  padding: 24px;
+}
+.dialog::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+.dialog h2 {
+  font: 700 22px/1.2 var(--display);
+}
+.dialog p {
+  color: var(--text-2);
+  font-size: 14px;
+  margin-top: 8px;
+}
+.dialog .field {
+  margin-top: 18px;
+}
+.dialogActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1000px) {
+  .top {
+    grid-template-columns: auto 1fr;
+    height: auto;
+  }
+  .top > * {
+    height: 64px;
+  }
+  .top > :first-child {
+    border-right: 0;
+  }
+  .top .tabs {
+    grid-column: 1/-1;
+    order: 3;
+    height: 46px;
+    border-top: 1px solid var(--line);
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 22px;
+  }
+  .top .tabs a {
+    height: 46px;
+    white-space: nowrap;
+  }
+  .gridAct {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cols > .main {
+    border-right: 0;
+  }
+  .sec {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stats > div:nth-child(2) {
+    border-right: 0;
+  }
+  .stats > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+  .timeline {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ts:nth-child(2) {
+    border-right: 0;
+  }
+  .ts:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--line);
+  }
+  .hideS {
+    display: none;
+  }
+}
+@media (max-width: 560px) {
+  .wallet .sol,
+  .brand span {
+    display: none;
+  }
+  .head h1 {
+    font-size: 28px;
+  }
+  .opts,
+  .row2 {
+    grid-template-columns: 1fr;
+  }
+  .hideXs {
+    display: none;
+  }
+  .mhead {
+    grid-template-columns: 1fr;
+  }
+  .actions .btn {
+    width: 100%;
+  }
+  .count {
+    margin-left: 0;
+  }
+  .deliv .h {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+}

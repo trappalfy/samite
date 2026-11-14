@@ -1,0 +1,29 @@
+# deps / builds
+node_modules/
+.pnpm-store/
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+coverage/
+playwright-report/
+test-results/
+# solana / anchor
+target/
+.anchor/
+test-ledger/
+# env & secrets
+.env
+.env.*
+!.env.example
+*.pem
+*keypair*.json
+# misc
+.DS_Store
+.vercel/
+.superpowers/
+next-env.d.ts
+.claude/worktrees/
+.data/

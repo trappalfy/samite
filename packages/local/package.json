@@ -1,0 +1,30 @@
+{
+  "name": "@samite/local",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local validator harness (dev and tests only): the program, local USDC at the real mint address, funded wallets.",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "up": "tsx src/cli.ts up",
+    "down": "tsx src/cli.ts down",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:int": "vitest run -c vitest.int.config.ts"
+  },
+  "dependencies": {
+    "@samite/config": "workspace:*",
+    "@samite/program-client": "workspace:*",
+    "@solana-program/system": "0.16.0",
+    "@solana-program/token": "0.18.0",
+    "@solana/kit": "8.6.0",
+    "@samite/db": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15",
+    "vitest": "5.1.0"
+  }
+}

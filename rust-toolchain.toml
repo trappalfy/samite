@@ -1,0 +1,6 @@
+# Host toolchain for the program's tests and IDL build (LiteSVM 0.18 needs Rust >= 1.97.1).
+# `cargo build-sbf` (via `anchor build`) uses the Solana platform-tools Rust instead.
+[toolchain]
+channel = "1.99.0"
+components = ["rustfmt", "clippy"]
+profile = "minimal"

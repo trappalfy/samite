@@ -1,0 +1,15 @@
+{
+  "v": "samite/delivery@1",
+  "job": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
+  "attempt": 1,
+  "kind": "file",
+  "files": [
+    {
+      "name": "listings.csv",
+      "bytes": 1468211,
+      "sha256": "2f9c4d1e8b7a6f5e4d3c2b1a09f8e7d6c5b4a39281706f5e4d3c2b1a0e01d0e1"
+    },
+    { "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "bytes": 0, "name": "empty.log" }
+  ],
+  "note": "All 2,000 rows. 14 listings had no area; left empty as allowed in the spec."
+}

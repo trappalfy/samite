@@ -1,0 +1,23 @@
+{
+  "name": "@samite/formats",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "golden": "python3 -I scripts/golden.py test/golden"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@samite/config": "workspace:*",
+    "vitest": "5.1.0"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "@samite/mainnet",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Owner-run mainnet scripts (CLAUDE.md §0, §14 M5). Dry by default; nothing is sent without --go and typing GO.",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@samite/config": "workspace:*",
+    "@samite/formats": "workspace:*",
+    "@samite/program-client": "workspace:*",
+    "@solana-program/token": "0.18.0",
+    "@solana/kit": "8.6.0"
+  },
+  "devDependencies": {
+    "tsx": "4.23.15"
+  }
+}

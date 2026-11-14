@@ -1,0 +1,33 @@
+{
+  "name": "@samite/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local MCP server for machines on Samite (CLAUDE.md \u00a76.3). Private until the owner confirms the @samite npm scope.",
+  "bin": {
+    "samite-mcp": "./src/main.ts"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:int": "vitest run -c vitest.int.config.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "2.4.0",
+    "@samite/config": "workspace:*",
+    "@samite/sdk": "workspace:*",
+    "@solana/kit": "8.6.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "2.4.0",
+    "tsx": "4.23.15",
+    "vitest": "5.1.0",
+    "@samite/local": "workspace:*"
+  }
+}

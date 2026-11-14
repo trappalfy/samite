@@ -1,0 +1,23 @@
+{
+  "v": "samite/job@1",
+  "title": "Label 5,000 product images by category",
+  "instructions": "# Batch 07\n\nImages: https://example.com/batch-07.zip\n\nOne CSV row per image: `filename,category`.\nCategories come from \"categories.txt\"; use the path C:\\data\\out.csv if you are on Windows.\n\tCaf\u0065\u0301 and cr\u0065\u0300me br\u0075\u0302l\u0065\u0301e photos go under \"food\".",
+  "accepted_when": [
+    "CSV has 5,000 rows and no empty category",
+    "I will spot-check 100 rows; 97 or more must be right \ud83d\udc4d"
+  ],
+  "deliverable": { "max_bytes": 209715200, "kind": "file" },
+  "category": "data",
+  "attachments": [
+    {
+      "url": "https://example.com/batch-07.zip",
+      "sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      "name": "batch-07.zip"
+    },
+    {
+      "sha256": "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1",
+      "name": "categories.txt",
+      "url": "https://example.com/categories.txt?v=2&lang=en"
+    }
+  ]
+}

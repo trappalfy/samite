@@ -1,0 +1,1 @@
+{"attempt":2,"job":"11111111111111111111111111111111","kind":"text","note":"A naïve first pass; see \"Caveats\".","text":"Answer:\n\n1. The café opens at 08:00 ☕\n2. Closed on Mondays 😴\n\nCaveats: hours change in August.\r\nSource: \\\\server\\share\\hours.txt","v":"samite/delivery@1"}

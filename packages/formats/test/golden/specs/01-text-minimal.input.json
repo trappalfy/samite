@@ -1,0 +1,8 @@
+{
+  "category": "research",
+  "v": "samite/job@1",
+  "deliverable": { "kind": "text" },
+  "title": "Summarise three papers",
+  "accepted_when": ["One paragraph per paper, under 200 words each"],
+  "instructions": "Papers: arXiv 2401.00001, 2401.00002 and 2401.00003. Plain English, no jargon."
+}

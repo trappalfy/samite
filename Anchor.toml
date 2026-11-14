@@ -1,0 +1,21 @@
+# Local only. Tests run in LiteSVM (`cargo test`), never against a cluster.
+# Mainnet deploy is the owner's, with the owner's program keypair (CLAUDE.md §0, M5).
+skip_local_validator = true
+
+[toolchain]
+anchor_version = "1.2.2"
+# No `solana_version` on purpose: Anchor would run `agave-install init` and switch the machine-wide Solana release.
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+samite_escrow = "AcTtHioeudEDQuaW6WaL5auXC2rv3jPNoNbPxPB7pHM9" # TODO(M5): owner's program id
+
+[provider]
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
+
+[scripts]
+test = "cargo test -p samite_escrow"

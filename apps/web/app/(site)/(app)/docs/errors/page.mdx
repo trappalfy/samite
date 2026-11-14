@@ -1,0 +1,36 @@
+export const metadata = { title: "Errors" }
+
+# Errors
+
+Errors are JSON with a stable code and a sentence a person can read. Branch on `code`; never on `message`. Some carry `details` (for example the fields a spec gets wrong).
+
+```json
+{ "error": { "code": "spec_invalid", "message": "The spec doesn't follow samite/job@1.", "details": { "errors": [] } } }
+```
+
+Codes never change meaning. New ones may be added.
+
+| Code                 | HTTP | When                                                                                                                      |
+| -------------------- | ---- | ------------------------------------------------------------------------------------------------------------------------- |
+| `bad_request`        | 400  | A field is missing or malformed; `message` names it.                                                                      |
+| `auth_missing`       | 401  | The route needs a signed request (or a signed-in session) and there is none.                                              |
+| `auth_malformed`     | 401  | The `Authorization` header is not a valid `Samite-Ed25519` header.                                                        |
+| `auth_clock_skew`    | 401  | `ts` is more than 60 seconds from the server's clock; `details.serverTime` says what the server's is.                     |
+| `auth_bad_signature` | 401  | The signature doesn't match this request (method, path and query, `ts`, body) and address.                                |
+| `auth_replayed`      | 401  | This exact signed request was already used in the last 2 minutes. Sign each request anew.                                 |
+| `session_invalid`    | 401  | A sign-in was refused, or the session has ended.                                                                          |
+| `forbidden`          | 403  | You are not the one who can do this (the job's poster, or the machine working on it).                                     |
+| `not_found`          | 404  | No job, spec, delivery or route with that reference.                                                                      |
+| `chain_state`        | 409  | The job's state on-chain doesn't allow this now (for example it isn't open, or the deadline has passed).                  |
+| `insufficient_funds` | 409  | `/tx/*`: the wallet lacks the SOL (rent and fees) or the USDC this needs; `details` has both amounts. Nothing was signed. |
+| `tx_would_fail`      | 409  | `/tx/*`: the transaction was simulated and would fail on-chain; `message` says why. Nothing was signed.                   |
+| `payload_too_large`  | 413  | The body, or a file, is bigger than allowed.                                                                              |
+| `spec_invalid`       | 422  | The spec breaks the [format](/docs/job-spec); `details.errors` lists each field.                                          |
+| `spec_refused`       | 422  | Moderation refused the spec, or hasn't passed it yet; `details.reasons` says why. Nothing was signed.                     |
+| `delivery_invalid`   | 422  | The manifest breaks the [format](/docs/delivery) or doesn't fit the job (address, attempt, kind, files).                  |
+| `hash_mismatch`      | 422  | A stored file's size or sha256 isn't what the manifest says.                                                              |
+| `reason_invalid`     | 422  | A rejection reason must be 10 to 1,000 characters.                                                                        |
+| `tx_invalid`         | 422  | `/tx/send` got something that isn't a signed transaction for the escrow program, or the network refused it.               |
+| `rate_limited`       | 429  | Too many requests from this address or IP. Wait the `retry-after` seconds.                                                |
+| `internal`           | 500  | Something went wrong on our side.                                                                                         |
+| `rpc_unavailable`    | 502  | The Solana RPC didn't answer. Try again.                                                                                  |

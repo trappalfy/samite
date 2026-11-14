@@ -1,0 +1,36 @@
+{
+  "name": "@samite/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Indexer + keeper (CLAUDE.md §7.2).",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "record": "tsx scripts/record-session.ts",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:int": "vitest run -c vitest.int.config.ts",
+    "test:svm": "vitest run -c vitest.svm.config.ts"
+  },
+  "dependencies": {
+    "@samite/config": "workspace:*",
+    "@samite/db": "workspace:*",
+    "@samite/formats": "workspace:*",
+    "@samite/program-client": "workspace:*",
+    "@samite/storage": "workspace:*",
+    "@solana-program/token": "0.18.0",
+    "@solana/kit": "8.6.0",
+    "@solana/sysvars": "8.6.0",
+    "drizzle-orm": "0.45.4"
+  },
+  "devDependencies": {
+    "@samite/local": "workspace:*",
+    "litesvm": "1.6.2",
+    "tsx": "4.23.15",
+    "vitest": "5.1.0"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

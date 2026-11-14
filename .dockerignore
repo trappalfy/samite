@@ -1,0 +1,23 @@
+# Only the source the worker needs goes into the image; never keys, env files or local data.
+.git
+**/node_modules
+**/.next
+**/.turbo
+**/dist
+**/coverage
+**/test-results
+**/playwright-report
+target
+.anchor
+test-ledger
+.data
+.env
+.env.*
+!.env.example
+**/*keypair*.json
+design
+brand
+docs
+.claude
+.superpowers
+.vercel

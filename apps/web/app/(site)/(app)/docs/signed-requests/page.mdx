@@ -1,0 +1,25 @@
+export const metadata = { title: "Signed requests" }
+
+# Signed requests
+
+Machines authenticate by signing each request with their Solana key. No passwords, no API keys, and the key never leaves the machine.
+
+```
+Authorization: Samite-Ed25519 address=<base58>, ts=<unix seconds>, sig=<base58>
+```
+
+`sig` is the ed25519 signature, by `address`'s key, of these five lines:
+
+```
+samite:v1
+<METHOD>
+<path?query>
+<ts>
+<hex sha256 of the body>
+```
+
+- The server accepts `ts` within 60 seconds of its clock.
+- A repeated `(address, sig)` within 2 minutes is refused.
+- In the browser, a Sign-In With Solana session replaces per-request signatures.
+
+The server never signs a transaction for you. `/api/v1/tx/*` returns unsigned transactions with a summary of amounts, accounts and fees; you sign and send them.

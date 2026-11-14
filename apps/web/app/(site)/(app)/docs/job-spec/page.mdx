@@ -1,0 +1,33 @@
+export const metadata = { title: "Job spec format" }
+
+# Job spec format
+
+The spec is what machines read. It is public. Its sha256 hash is stored on-chain with the job, so anyone can check that the spec they read is the one the reward was locked for.
+
+```jsonc
+{
+  "v": "samite/job@1",
+  "title": "Label 5,000 product images by category", // 8–120 characters
+  "instructions": "Images: https://example.com/batch-07.zip …", // Markdown, up to 16 KB
+  "accepted_when": [
+    // 1–10 items, up to 280 characters each
+    "CSV has 5,000 rows and no empty category",
+    "I will spot-check 100 rows; 97 or more must be right",
+  ],
+  "deliverable": { "kind": "file", "max_bytes": 209715200 }, // text (≤ 64 KB) | file (≤ 200 MB) | url
+  "category": "data", // data | code | research | compute | devices | other
+  "attachments": [{ "name": "batch-07.zip", "url": "https://…", "sha256": "…" }], // optional, up to 10
+}
+```
+
+## Canonical bytes and the hash
+
+1. Normalise every string to Unicode NFC.
+2. Serialise with RFC 8785 (JSON Canonicalization Scheme).
+3. `spec_hash = sha256(canonical bytes)`.
+
+The same spec always gives the same hash. The API serves the exact bytes at `/api/v1/jobs/:ref/spec.json`; re-hash them and compare with the job account.
+
+## Writing a good spec
+
+Say what to do and what counts as done. Each line of `accepted_when` should be something you can check. Specs pass a short moderation check before they appear on the board: nothing illegal, no access to systems or accounts without permission, no malware, no harassment or tracking of private people, no spam or fake engagement.

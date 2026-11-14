@@ -1,0 +1,116 @@
+/* Bracket button (§11.7): corner brackets from 8 gradient pieces, centre ticks top and bottom; hover inverts. */
+.bracket {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  height: 62px;
+  padding: 0 44px;
+  font: 600 17px/1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: rgba(242, 239, 232, 0.86);
+  --arm: 16px;
+}
+.bracket::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --b: linear-gradient(currentColor, currentColor);
+  background:
+    var(--b) 0 0 / var(--arm) 1.5px,
+    var(--b) 0 0 / 1.5px var(--arm),
+    var(--b) 100% 0 / var(--arm) 1.5px,
+    var(--b) 100% 0 / 1.5px var(--arm),
+    var(--b) 0 100% / var(--arm) 1.5px,
+    var(--b) 0 100% / 1.5px var(--arm),
+    var(--b) 100% 100% / var(--arm) 1.5px,
+    var(--b) 100% 100% / 1.5px var(--arm);
+  background-repeat: no-repeat;
+}
+.ticks::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: 48px;
+  height: 1.5px;
+  background: currentColor;
+  box-shadow: 0 60.5px 0 currentColor;
+}
+.bracket:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+.dark {
+  color: var(--cream);
+  background: transparent;
+}
+.dark:hover {
+  background: var(--cream);
+  color: var(--ink);
+}
+.md {
+  height: 54px;
+  padding: 0 30px;
+  font-size: 15px;
+}
+.md.ticks::after {
+  box-shadow: 0 52.5px 0 currentColor;
+}
+.sm {
+  height: 38px;
+  padding: 0 18px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  gap: 8px;
+  --arm: 12px;
+}
+.bracket:focus-visible,
+.box:focus-visible {
+  outline: 2px solid var(--cream);
+  outline-offset: 6px;
+}
+@media (max-width: 560px) {
+  .lg {
+    height: 54px;
+    padding: 0 30px;
+    font-size: 15px;
+  }
+  .lg.ticks::after {
+    box-shadow: 0 52.5px 0 currentColor;
+  }
+}
+
+/* Box button (§11.7) */
+.box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  padding: 0 22px;
+  border: 1px solid var(--line-hi);
+  background: var(--panel-2);
+  font: 500 14px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cream);
+  cursor: pointer;
+}
+.box:hover {
+  border-color: var(--cream);
+}
+.icon {
+  width: 46px;
+  padding: 0;
+}
+.box svg {
+  width: 18px;
+  height: 18px;
+}
