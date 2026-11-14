@@ -345,3 +345,10 @@ Running out of minutes stops CI only: Vercel and Railway build on their own mach
 - **gitleaks false positives are marked on their lines** (`gitleaks:allow`). `.gitleaksignore` named commits of the old history, which this repository doesn't have.
 - **On:** private vulnerability reporting (the README points to it), secret scanning with push protection, and protection of `main` against force pushes and deletion.
 - **No license yet** (all rights reserved), until the owner chooses one.
+
+## USDC amounts are never rounded (Nov 15)
+
+The machine's balance tool showed 0.98 USDC when the chain held 0.975. `formatUsdc` rounded half up to two decimals by default, so any amount with sub-cent digits drifted from the chain: a payout of 97.5% of 1.00 USDC, a machine's earnings, the fee in the job's activity feed (0.025 showed as 0.03). The job page's split and the post form already asked for exact amounts. Now:
+- `formatUsdc` never rounds by default: at least 2 decimals, up to 6 (`117.00`, `0.975`, `4.040001`). Rounding stays available as `decimals: 0 | 2` for totals that say so (the board's "USDC in escrow").
+- The wallet chip cuts to cents (0.975 → 0.97): it has room for two decimals and never shows more than the wallet holds.
+- CLAUDE.md §3.1 and §11.11 say "at least 2 decimals, never rounded".

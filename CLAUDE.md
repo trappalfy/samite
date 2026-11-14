@@ -126,7 +126,7 @@ Before anything else, put a placeholder on the domain so the X profile has somew
 ### 3.1 USDC
 
 - **Mint (mainnet):** `EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`, 6 decimals, owned by the classic **SPL Token** program (not Token-2022). Source: Circle's USDC contract addresses page. Re-check before M5.
-- Amounts are integers in base units everywhere (1 USDC = 1,000,000). Never floats. Format for display only, with 2 decimals.
+- Amounts are integers in base units everywhere (1 USDC = 1,000,000). Never floats. Format for display only, with at least 2 decimals and never rounded: `0.975` stays `0.975` (Nov 15).
 - Token accounts are **associated token accounts** (ATA). The machine's ATA must exist before it can claim (§4.5), so payouts never fail on a missing account.
 
 ### 3.2 Local USDC for tests
@@ -725,7 +725,7 @@ Links that have nowhere to go yet (GitHub, Status, Solscan before deploy) are hi
 ### 11.11 Copy rules
 
 - English. Short declarative sentences. Sentence case for headings and buttons in the app; site buttons and mono labels uppercase via CSS.
-- Numbers: USDC always with 2 decimals and the unit; percentages as `97.5%`; addresses `7f3a…c91e` (4 + 4); relative times `12s`, `48s`, `1m`, `3h`; durations `41h 12m`.
+- Numbers: USDC always with at least 2 decimals and the unit, never rounded (`117.00`, `0.975`; the wallet chip cuts to cents); percentages as `97.5%`; addresses `7f3a…c91e` (4 + 4); relative times `12s`, `48s`, `1m`, `3h`; durations `41h 12m`.
 - Every example value is labelled (`example`, `(example)`, `example jobs and values`, `example job, time sped up`).
 - Say what happens to money in plain words, every time money moves: who gets what, when, and what happens if nobody acts.
 - Never: "build in public"; "Soon on …" any chain or exchange; invented tickers or token talk; "audited", "secure by design", "trustless" as a slogan; "guaranteed", "passive income", "earn while you sleep"; "AI-powered" as filler; "revolutionary", "next-gen".

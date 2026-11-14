@@ -11,19 +11,20 @@ const SCALE = 10n ** BigInt(USDC_DECIMALS)
 const group = (s: string) => s.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 
 /**
- * Base units → "1,234.56" (rounded half up). Display only; never parse this back.
- * `decimals: "exact"` never rounds: at least 2 decimals, up to 6 (`0.975`, `117.00`). Use it for the parts of a split,
- * so that what the machine gets and the fee always add up to the reward shown next to them.
+ * Base units → "1,234.56". Display only; never parse this back.
+ * By default it never rounds: at least 2 decimals, up to 6 (`117.00`, `0.975`, `4.040001`), so every amount on a
+ * screen is the chain's amount (a machine's 0.975 USDC showed as 0.98 until Nov 15). `decimals: 0 | 2` rounds half up,
+ * for totals that say they are rounded. `decimals: "exact"` is the default, spelled out.
  */
 export function formatUsdc(amount: bigint, opts: { decimals?: 0 | 2 | "exact" } = {}): string {
   const neg = amount < 0n
   const abs = neg ? -amount : amount
   let s: string
-  if (opts.decimals === "exact") {
+  if (opts.decimals === undefined || opts.decimals === "exact") {
     const frac = (abs % SCALE).toString().padStart(USDC_DECIMALS, "0").replace(/0+$/, "").padEnd(2, "0")
     s = `${group((abs / SCALE).toString())}.${frac}`
   } else {
-    const decimals = opts.decimals ?? 2
+    const decimals = opts.decimals
     const unit = 10n ** BigInt(USDC_DECIMALS - decimals)
     const rounded = (abs + unit / 2n) / unit // in units of 10^-decimals USDC
     const whole = rounded / 10n ** BigInt(decimals)
