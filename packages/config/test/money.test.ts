@@ -21,11 +21,19 @@ describe("splitReward (CLAUDE.md §4.5)", () => {
 })
 
 describe("formatUsdc", () => {
-  it("shows two decimals and groups thousands", () => {
+  it("shows at least two decimals and groups thousands", () => {
     expect(formatUsdc(117_000_000n)).toBe("117.00")
-    expect(formatUsdc(24_375_000n)).toBe("24.38")
     expect(formatUsdc(6_418_500_000n)).toBe("6,418.50")
     expect(formatUsdc(0n)).toBe("0.00")
+  })
+
+  it("never rounds unless asked: the machine's 0.975 USDC showed as 0.98 (Nov 15)", () => {
+    expect(formatUsdc(975_000n)).toBe("0.975")
+    expect(formatUsdc(25_000n)).toBe("0.025")
+    expect(formatUsdc(24_375_000n)).toBe("24.375")
+    expect(formatUsdc(4_040_001n)).toBe("4.040001")
+    expect(formatUsdc(24_375_000n, { decimals: 2 })).toBe("24.38")
+    expect(formatUsdc(48_210_400_000n, { decimals: 0 })).toBe("48,210")
   })
 
   it("shows a split part exactly, so the parts always add up to the reward", () => {

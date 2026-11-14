@@ -12,6 +12,9 @@ import { browserRpc, USDC_MINT } from "@/lib/wallet/client"
 import { signOut } from "@/lib/wallet/session"
 import { useWallet } from "@/lib/wallet/store"
 
+// The chip has room for two decimals, and it never shows more than the wallet holds: cut, not rounded (0.975 → 0.97).
+const cents = (v: bigint) => v - (v % 10_000n)
+
 function useUsdc(owner: string | undefined) {
   const [usdc, setUsdc] = useState<bigint | null>(null)
   useEffect(() => {
@@ -73,7 +76,7 @@ function LiveWallet() {
         >
           <i aria-hidden="true" />
           {shortAddress(connected.address)}
-          {usdc !== null && <span className={s.sol}>· {formatUsdc(usdc)} USDC</span>}
+          {usdc !== null && <span className={s.sol}>· {formatUsdc(cents(usdc))} USDC</span>}
         </button>
         <dialog ref={dialog} className={s.dialog} aria-labelledby="wallet-h">
           <h2 id="wallet-h">{connected.name}</h2>
