@@ -4,10 +4,13 @@
 // An injected <script>, an inline event handler or a javascript: URL doesn't run. Every page is rendered per request
 // for this (the root layout reads the nonce), so no page is served from a build-time HTML file without one.
 //
-// Where the page may connect: itself, the browser's RPC (NEXT_PUBLIC_RPC_URL), the R2 endpoint (the job page's
+// Where the page may connect: itself, the browser's RPC (NEXT_PUBLIC_RPC_URL) and the public RPCs it falls back to
+// (lib/rpc-url.ts), the R2 endpoint (the job page's
 // delivery preview), and Privy. Privy's list is from docs.privy.io/security/implementation-guide/content-security-policy
 // (read Nov 14, 2026): the required domains, Cloudflare Turnstile (in their example policy), and Solana's public RPC,
 // which they list for apps that don't give Privy their own (Samite doesn't). Re-check it at every Privy upgrade.
+
+import { PUBLIC_RPC_URLS } from "./rpc-url"
 
 const PRIVY_FRAMES = ["https://auth.privy.io", "https://verify.walletconnect.com", "https://verify.walletconnect.org"]
 const PRIVY_CONNECT = [
@@ -50,7 +53,12 @@ export function newNonce(): string {
 }
 
 export function contentSecurityPolicy(o: CspOptions): string {
-  const connect = ["'self'", originOf(o.rpcUrl), o.r2AccountId && `https://${o.r2AccountId}.r2.cloudflarestorage.com`]
+  const connect = [
+    "'self'",
+    originOf(o.rpcUrl),
+    ...PUBLIC_RPC_URLS,
+    o.r2AccountId && `https://${o.r2AccountId}.r2.cloudflarestorage.com`,
+  ]
   const directives: [string, ...(string | false | undefined)[]][] = [
     ["default-src", "'self'"],
     // 'self' and the host are ignored by browsers that know 'strict-dynamic'; older ones fall back to them

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { contentSecurityPolicy, LOCKED_CSP, newNonce, originOf } from "@/lib/csp"
+import { PUBLIC_RPC_URLS } from "@/lib/rpc-url"
 
 const directive = (csp: string, name: string) =>
   csp
@@ -32,6 +33,12 @@ describe("contentSecurityPolicy", () => {
     const csp = contentSecurityPolicy(base)
     expect(directive(csp, "connect-src")).toContain("https://mainnet.helius-rpc.com")
     expect(csp).not.toContain("SECRET")
+  })
+
+  it("lets the page reach the public RPCs its chain check falls back to (the owner's browser got 403 from Solana's, Nov 15)", () => {
+    const csp = contentSecurityPolicy(base)
+    for (const url of PUBLIC_RPC_URLS) expect(directive(csp, "connect-src")).toContain(url)
+    expect(PUBLIC_RPC_URLS).toEqual(["https://solana-rpc.publicnode.com", "https://api.mainnet-beta.solana.com"])
   })
 
   it("allows the R2 endpoint when its account is configured, and nothing of R2 when not", () => {
