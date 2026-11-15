@@ -3,7 +3,7 @@
 // production (CLAUDE.md §0); locally the harness's validator, as `solana:localnet`.
 import { createClient, createDefaultRpcTransport, createSolanaRpcFromTransport, type RpcTransport } from "@solana/kit"
 import { walletWithoutSigner, type ClientWithWallet } from "@solana/kit-plugin-wallet"
-import { BROWSER_RPC_URL } from "../rpc-url"
+import { BROWSER_RPC_URL, PUBLIC_RPC_URLS } from "../rpc-url"
 import { failover } from "./failover"
 
 export const RPC_URL = BROWSER_RPC_URL
@@ -17,25 +17,20 @@ export function walletClient(): ClientWithWallet {
   return client
 }
 
-/**
- * Solana's public mainnet RPC: where the browser's requests go when its own key fails (refused, rate-limited, down).
- * Not Samite's server, so the job page's check stays independent of the API (§12). It is rate-limited itself, so it
- * is only the fallback. The CSP already allows it (lib/csp.ts).
- */
-const PUBLIC_RPC_URL = "https://api.mainnet-beta.solana.com"
-
 function transport(): RpcTransport {
   const own = createDefaultRpcTransport({ url: RPC_URL })
   if (CHAIN !== "solana:mainnet") return own
-  return failover([own, createDefaultRpcTransport({ url: PUBLIC_RPC_URL })], {
-    onFail: (i, e) =>
-      console.warn(
-        JSON.stringify({
-          msg: i === 0 ? "browser rpc failed; using Solana's public RPC" : "public rpc failed",
-          e: String(e),
-        }),
-      ),
-  })
+  const all = [RPC_URL, ...PUBLIC_RPC_URLS]
+  return failover(
+    all.map((url) => createDefaultRpcTransport({ url })),
+    {
+      // the origin only: the browser key's URL carries its API key
+      onFail: (i, e) =>
+        console.warn(
+          JSON.stringify({ msg: "browser rpc failed", rpc: i === 0 ? "own" : new URL(all[i]!).host, e: String(e) }),
+        ),
+    },
+  )
 }
 
 let rpc: ReturnType<typeof createSolanaRpcFromTransport<RpcTransport>> | undefined
