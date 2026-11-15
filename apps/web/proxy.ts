@@ -23,7 +23,7 @@ export async function proxy(request: NextRequest) {
       nonce: newNonce(),
       dev: process.env.NODE_ENV === "development",
       production: isProduction(),
-      rpcUrl: BROWSER_RPC_URL,
+      rpcUrl: BROWSER_RPC_URL ?? "",
       r2AccountId: process.env.R2_ACCOUNT_ID || undefined,
     })
     // Next.js reads the nonce from the request's policy and puts it on the scripts it renders

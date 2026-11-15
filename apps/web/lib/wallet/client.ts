@@ -18,16 +18,26 @@ export function walletClient(): ClientWithWallet {
 }
 
 function transport(): RpcTransport {
-  const own = createDefaultRpcTransport({ url: RPC_URL })
-  if (CHAIN !== "solana:mainnet") return own
-  const all = [RPC_URL, ...PUBLIC_RPC_URLS]
+  if (CHAIN !== "solana:mainnet") return createDefaultRpcTransport({ url: RPC_URL ?? "http://127.0.0.1:8899" })
+  // a NEXT_PUBLIC_RPC_URL that isn't a full URL is never called: it would go to samite.fun itself (lib/rpc-url.ts)
+  if (RPC_URL === null)
+    console.error(
+      JSON.stringify({
+        msg: "NEXT_PUBLIC_RPC_URL is not a full https URL; the page reads the chain through public RPCs",
+      }),
+    )
+  const all = [...(RPC_URL === null ? [] : [RPC_URL]), ...PUBLIC_RPC_URLS]
   return failover(
     all.map((url) => createDefaultRpcTransport({ url })),
     {
       // the origin only: the browser key's URL carries its API key
       onFail: (i, e) =>
         console.warn(
-          JSON.stringify({ msg: "browser rpc failed", rpc: i === 0 ? "own" : new URL(all[i]!).host, e: String(e) }),
+          JSON.stringify({
+            msg: "browser rpc failed",
+            rpc: all[i] === RPC_URL ? "own" : new URL(all[i]!).host,
+            e: String(e),
+          }),
         ),
     },
   )
