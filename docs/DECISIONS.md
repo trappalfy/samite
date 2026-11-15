@@ -352,3 +352,9 @@ The machine's balance tool showed 0.98 USDC when the chain held 0.975. `formatUs
 - `formatUsdc` never rounds by default: at least 2 decimals, up to 6 (`117.00`, `0.975`, `4.040001`). Rounding stays available as `decimals: 0 | 2` for totals that say so (the board's "USDC in escrow").
 - The wallet chip cuts to cents (0.975 → 0.97): it has room for two decimals and never shows more than the wallet holds.
 - CLAUDE.md §3.1 and §11.11 say "at least 2 decimals, never rounded".
+
+## The browser's chain check (Nov 15)
+
+The owner had no Accept button on job 0002: the job page shows the poster's buttons only after the browser has read the job from the chain (§12), and every RPC it tried failed.
+- **samite.fun's `NEXT_PUBLIC_RPC_URL` held a bare Helius key.** The browser took it for a relative path and sent its RPC calls, key included, to samite.fun itself (`404 POST samite.fun/jobs/<key>`, seen from a headless browser on the owner's IP). The CSP had no origin for it, which is how it showed. Now `lib/rpc-url.ts` uses the variable only when it is a full http(s) URL; anything else is never called, and the page says so in the console. The RUNBOOK names the format.
+- **Solana's public RPC answered the owner's IP with 403 for hours.** PublicNode's public RPC (`solana-rpc.publicnode.com`, CORS for any site, checked Nov 15) is now the first fallback, then Solana's. One list feeds the failover and the CSP.
