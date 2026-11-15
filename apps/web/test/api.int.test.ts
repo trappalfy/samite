@@ -220,7 +220,7 @@ describe("the HTTP API on the local validator", () => {
     )
     expect(noSol).toMatchObject({ status: 409, body: { error: { code: "insufficient_funds" } } })
     expect(noSol.body.error.message).toMatch(
-      /^Your wallet has 0 SOL; this needs about [\d.]+ SOL \([\d.]+ of it is account rent, which comes back when the job closes/,
+      /^Your wallet has 0 SOL; this needs about [\d.]+ SOL: [\d.]+ account rent, which comes back when the job closes, [\d.]+ that Solana requires every wallet to keep, and about [\d.]+ for network fees\./,
     )
     expect(noSol.body.error.details).toMatchObject({ asset: "SOL", have_lamports: "0" })
 
