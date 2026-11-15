@@ -44,7 +44,7 @@ import type { Server } from "./context"
 import { ApiError } from "./errors"
 import { bigintField, stringField } from "./http"
 import { findJob } from "./jobs"
-import { explainFailure, type Needs } from "./preflight"
+import { explainFailure, PRIORITY_FEE_MARGIN, type Needs } from "./preflight"
 
 export const TX_ACTIONS = ["post", "cancel", "claim", "unclaim", "deliver", "accept", "reject"] as const
 export type TxAction = (typeof TX_ACTIONS)[number]
@@ -77,7 +77,7 @@ async function chainJob(s: Server, pda: Address): Promise<Job> {
  * Compiles the unsigned transaction and simulates it first (preflight.ts): one that would fail on-chain is refused
  * here with what is missing, so no wallet is asked to sign it.
  */
-async function wire(s: Server, payer: Address, ixs: Instruction[], need: Omit<Needs, "lamports">) {
+async function wire(s: Server, payer: Address, ixs: Instruction[], need: Omit<Needs, "reserve" | "fees">) {
   const { value: blockhash } = await s.rpc.getLatestBlockhash({ commitment: "confirmed" }).send()
   const msg = pipe(
     createTransactionMessage({ version: 0 }),
@@ -97,13 +97,14 @@ async function wire(s: Server, payer: Address, ixs: Instruction[], need: Omit<Ne
     })
     .send()
   if (sim.err) {
-    const [{ value: lamports }, usdc] = await Promise.all([
+    const [{ value: lamports }, usdc, reserve] = await Promise.all([
       s.rpc.getBalance(payer, { commitment: "confirmed" }).send(),
       usdcHeld(s, payer),
+      s.rpc.getMinimumBalanceForRentExemption(0n).send(),
     ])
     throw explainFailure(
       { err: sim.err, logs: sim.logs },
-      { ...need, lamports: need.rent + LAMPORTS_PER_SIGNATURE * BigInt(signers) },
+      { ...need, reserve, fees: LAMPORTS_PER_SIGNATURE * BigInt(signers) + PRIORITY_FEE_MARGIN },
       { lamports, usdc },
     )
   }

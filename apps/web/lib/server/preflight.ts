@@ -7,8 +7,15 @@ import { ApiError } from "./errors"
 import { formatUsdc } from "@samite/config/money"
 
 export type Simulated = { err: unknown; logs: readonly string[] | null }
-/** What the transaction needs from the fee payer: SOL for rent and fees, and USDC it locks (0 if none). */
-export type Needs = { lamports: bigint; rent: bigint; rentComesBack: boolean; usdc: bigint }
+/**
+ * What the transaction needs from the fee payer: rent for the accounts it opens, the minimum a wallet must keep after it
+ * (`reserve`, a 0-byte account's rent: a wallet can't be left with less unless it is emptied), network fees with a margin
+ * for the priority fee a wallet adds (`fees`), and the USDC it locks (0 if none).
+ */
+export type Needs = { rent: bigint; rentComesBack: boolean; usdc: bigint; reserve: bigint; fees: bigint }
+
+/** A wallet's own priority fee: Phantom added 75,000 lamports to each of the owner's mainnet transactions (Nov 14–15). */
+export const PRIORITY_FEE_MARGIN = 100_000n
 /** What the fee payer holds; `usdc` is null when the wallet has no USDC account at all. */
 export type Holds = { lamports: bigint; usdc: bigint | null }
 
@@ -37,19 +44,21 @@ export function anchorMessage(logs: readonly string[] | null): string | null {
 export function explainFailure(sim: Simulated, need: Needs, have: Holds): ApiError {
   const logs = sim.logs ?? []
   const nothing = "Nothing was signed."
+  const lamports = need.rent + need.reserve + need.fees
   const solShort =
-    have.lamports < need.lamports ||
-    SOL_ERRORS.has(errName(sim.err)) ||
-    logs.some((l) => /insufficient lamports/i.test(l))
+    have.lamports < lamports || SOL_ERRORS.has(errName(sim.err)) || logs.some((l) => /insufficient lamports/i.test(l))
   if (solShort) {
-    const rent =
-      need.rent > 0n
-        ? ` (${formatSol(need.rent)} of it is account rent${need.rentComesBack ? ", which comes back when the job closes" : ""}, the rest the network fee)`
-        : " for the network fee"
+    const parts = [
+      need.rent > 0n &&
+        `${formatSol(need.rent)} account rent${need.rentComesBack ? ", which comes back when the job closes" : ""}`,
+      need.reserve > 0n && `${formatSol(need.reserve)} that Solana requires every wallet to keep`,
+      `about ${formatSol(need.fees)} for network fees`,
+    ].filter(Boolean) as string[]
+    const list = parts.length > 1 ? `${parts.slice(0, -1).join(", ")}, and ${parts.at(-1)}` : parts[0]
     return new ApiError(
       "insufficient_funds",
-      `Your wallet has ${formatSol(have.lamports)} SOL; this needs about ${formatSol(need.lamports)} SOL${rent}. Add a little SOL and try again. ${nothing}`,
-      { asset: "SOL", need_lamports: need.lamports.toString(), have_lamports: have.lamports.toString() },
+      `Your wallet has ${formatSol(have.lamports)} SOL; this needs about ${formatSol(lamports)} SOL: ${list}. Add a little SOL and try again. ${nothing}`,
+      { asset: "SOL", need_lamports: lamports.toString(), have_lamports: have.lamports.toString() },
     )
   }
   const usdcShort =
