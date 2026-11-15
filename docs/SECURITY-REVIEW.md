@@ -541,8 +541,8 @@ Each was reproduced by a test that failed before the fix (DECISIONS, "M6 prep �
 - [ ] R2 bucket private (no public access); CORS allows `GET` from `https://samite.fun` only (the delivery preview
       fetches from it; **not verified**).
 - [ ] Admin, upgrade authority and treasury keys never in any `.env`; a Squads multisig is recommended (§16).
-- [ ] Keeper: a new key with at most 0.5 SOL (docs/RUNBOOK.md:150); `KEEPER_ENABLED=true` only after its own "go";
-      keep the worker's `/health` off the public internet or fix R11.
+- [x] Keeper: a new key with at most 0.5 SOL (docs/RUNBOOK.md:150); `KEEPER_ENABLED=true` only after its own "go"
+      (on Nov 15: `VxdT…7x4J`, 0.005 SOL). Still to check: the worker's `/health` has no public domain on Railway (R11).
 - [x] `pnpm audit --prod` run and reviewed (section 14, Nov 14); the gitleaks job is green on `main` (Nov 14).
 - [x] The PROGRAM-REVIEW open items are decided (Nov 13: every claim lapses; no claim bond; `Proven` stays a hint).
 - [ ] Re-verify the USDC mint against Circle's page before M5 (`TODO(verify)`).

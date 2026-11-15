@@ -2,6 +2,14 @@
 
 One note per milestone (CLAUDE.md §14), newest first.
 
+## M5 — the keeper is on (Nov 15, 2026)
+
+The owner said "go" for the keeper. A new key, made only for it: `VxdTHQNHdLP3LXCfP5AEu2P3kNmBgyZXtMYEN5F7x4J`, funded by the owner with 0.005 SOL (0.00065 of it is the minimum a wallet keeps; the rest pays about 870 transactions at 0.000005 SOL). It has no authority over anything and pays no rent. The key was generated without printing its seed phrase; `KEEPER_SECRET` went from `scripts/mainnet/keeper-secret.ts` into a file only the owner could read, the owner pasted it into Railway, and the file was deleted. The keypair stays in the owner's `~/samite-keys/keeper.json`.
+
+The worker logs `"keeper on"` with that address (Railway deployment of `adcc9c6`, 00:47 UTC) and no errors. No job was open, so it had nothing to send yet.
+
+The mainnet test of the person's path (Nov 14–15): a post from Phantom, a claim and a text delivery from the machine, an accept. Every amount matched the chain to the lamport. The bugs found on the way are fixed (DECISIONS, "Manual tests on the closed site" and the Nov 15 sections).
+
 ## M5 — mainnet: accepted (Nov 14, 2026)
 
 **The owner ran every step on mainnet**, each after a dry run, with `--go` and a typed `GO`. Claude prepared the commands, checked each step read-only, and sent nothing.
