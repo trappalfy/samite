@@ -547,5 +547,5 @@ Each was reproduced by a test that failed before the fix (DECISIONS, "M6 prep �
 - [x] The PROGRAM-REVIEW open items are decided (Nov 13: every claim lapses; no claim bond; `Proven` stays a hint).
 - [ ] Re-verify the USDC mint against Circle's page before M5 (`TODO(verify)`).
 - [x] `script-src` with nonces and `connect-src` in the CSP (R3, Nov 14); Lighthouse re-measured locally.
-- [ ] Re-measure Lighthouse on samite.fun (pages now render per request), and connect Phantom, Solflare and Backpack
-      there once (the policy is checked with the test wallet only).
+- [ ] Re-measure Lighthouse on samite.fun (done Nov 19: 99–100 / 100, docs/PROGRESS.md), and connect Phantom, Solflare
+      and Backpack there once (Phantom done in the mainnet test, Nov 14–15; Solflare and Backpack still to do).

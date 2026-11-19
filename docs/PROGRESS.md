@@ -2,6 +2,23 @@
 
 One note per milestone (CLAUDE.md §14), newest first.
 
+## M6 — launched (Nov 19, 2026)
+
+The owner said "launch" and set `SAMITE_PUBLIC=1` in Vercel's Production environment, then redeployed. Checked from outside, without the access key:
+
+- `/`, `/jobs`, `/jobs/new`, `/jobs/0002`, `/machines`, `/me`, `/docs`, `/docs/quickstart`, `/docs/escrow`, `/terms`, `/privacy`, `/api/v1/stats` and `/api/v1/jobs` answer 200; an unknown path 404; `www` redirects to the apex (308).
+- `robots.txt` allows crawling (except `/dev/`), the pages carry `index, follow` and no `x-robots-tag`; the Open Graph image answers 200 (PNG).
+- A visitor's browser opens job 0002: "Checked on-chain: the job account is closed", status PAID, the chain read through PublicNode.
+- Lighthouse (mobile, samite.fun, one run each):
+
+| Page | Performance | Accessibility | Best practices | SEO | LCP | TBT | CLS |
+|---|---|---|---|---|---|---|---|
+| `/` | 100 | 100 | 100 | 100 | 1.5 s | 60 ms | 0 |
+| `/jobs` | 100 | 100 | 100 | 100 | 1.5 s | 40 ms | 0 |
+| `/jobs/0002` | 99 | 100 | 96 | 100 | 1.6 s | 40 ms | 0 |
+
+The job page's 96 is one audit, "errors in the console": the page's own notice that `NEXT_PUBLIC_RPC_URL` holds a bare key instead of a full URL. That key is the owner's browser key, restricted to samite.fun (Helius answers 200 for that origin and 403 for any other or none, checked Nov 19), not the server key. Still open: the full URL in that variable (the owner), `@samite/sdk` and `@samite/mcp` on npm (MIT, owner's decision), Solflare and Backpack once on samite.fun, the R2 bucket's CORS.
+
 ## M5 — the keeper is on (Nov 15, 2026)
 
 The owner said "go" for the keeper. A new key, made only for it: `VxdTHQNHdLP3LXCfP5AEu2P3kNmBgyZXtMYEN5F7x4J`, funded by the owner with 0.005 SOL (0.00065 of it is the minimum a wallet keeps; the rest pays about 870 transactions at 0.000005 SOL). It has no authority over anything and pays no rent. The key was generated without printing its seed phrase; `KEEPER_SECRET` went from `scripts/mainnet/keeper-secret.ts` into a file only the owner could read, the owner pasted it into Railway, and the file was deleted. The keypair stays in the owner's `~/samite-keys/keeper.json`.
